@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>散文集</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+  :root {
+    --brand: #d95c41;
+    --brand-soft: rgba(217, 92, 65, 0.12);
+    --bg: #faf9f5;
+    --fg: #2c2a27;
+    --muted: #7a746c;
+    --line: rgba(44, 42, 39, 0.1);
+    --card: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --brand: #e07a5f;
+      --brand-soft: rgba(224, 122, 95, 0.16);
+      --bg: #171512;
+      --fg: #e8e2d8;
+      --muted: #9a928a;
+      --line: rgba(232, 226, 216, 0.12);
+      --card: #201d19;
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Inter', 'Noto Serif SC', sans-serif;
+    line-height: 1.9;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    min-height: 100vh;
+    transition: background .3s, color .3s;
+  }
+  nav.sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--line);
+    padding: 2.2rem 1.4rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--bg);
+    z-index: 10;
+  }
+  nav.sidebar .site-title {
+    font-family: 'Newsreader', 'Noto Serif SC', serif;
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+    color: var(--brand);
+  }
+  nav.sidebar .site-sub {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    margin-bottom: 2rem;
+  }
+  nav.sidebar .nav-label {
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  nav.sidebar a.item {
+    display: block;
+    padding: 0.55rem 0.8rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--fg);
+    font-size: 0.92rem;
+    margin-bottom: 0.15rem;
+    transition: background .2s, color .2s;
+  }
+  nav.sidebar a.item:hover { background: var(--brand-soft); color: var(--brand); }
+  nav.sidebar a.item.active { background: var(--brand-soft); color: var(--brand); font-weight: 500; }
+  nav.sidebar a.item { display: flex; align-items: center; gap: 0.55rem; }
+  nav.sidebar a.item .item-icon {
+    display: inline-flex;
+    color: var(--muted);
+    flex-shrink: 0;
+    transition: color .2s;
+  }
+  nav.sidebar a.item:hover .item-icon,
+  nav.sidebar a.item.active .item-icon { color: var(--brand); }
+  nav.sidebar a.item .item-text { line-height: 1.4; }
+  nav.sidebar a.item .en {
+    display: block;
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    margin-top: 0.1rem;
+  }
+  nav.sidebar a.item .date {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    margin-top: 0.1rem;
+    opacity: 0.8;
+  }
+  .essay-hero {
+    margin: 0 0 2.2rem;
+    padding: 0.5rem 0;
+  }
+  .essay-hero svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .essay .date-line {
+    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    margin-top: 0.6rem;
+    margin-bottom: 3rem;
+  }
+  main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .essay { display: none; width: 100%; }
+  .essay.active { display: block; }
+  .essay-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+  .essay .kicker {
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 1.2rem;
+  }
+  .essay h1 {
+    font-family: 'Newsreader', 'Noto Serif SC', serif;
+    font-weight: 400;
+    font-size: clamp(1.9rem, 4.5vw, 3rem);
+    line-height: 1.3;
+    margin-bottom: 0.6rem;
+  }
+  .essay h1 em { font-style: italic; color: var(--brand); }
+  .essay .sub {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 3rem;
+    letter-spacing: 0.06em;
+  }
+  .essay p {
+    margin-bottom: 1.9rem;
+    font-size: 1.06rem;
+    text-align: justify;
+    text-justify: inter-ideograph;
+  }
+  .essay p.lead { font-size: 1.2rem; line-height: 2; }
+  .dropcap::first-letter {
+    font-family: 'Newsreader', serif;
+    font-size: 3.4rem;
+    float: left;
+    line-height: 1;
+    padding: 0.35rem 0.6rem 0 0;
+    color: var(--brand);
+  }
+  .essay .quote {
+    border-left: 2px solid var(--brand);
+    padding: 0.3rem 0 0.3rem 1.4rem;
+    margin: 2.6rem 0;
+    font-family: 'Newsreader', 'Noto Serif SC', serif;
+    font-style: italic;
+    font-size: 1.16rem;
+    line-height: 1.9;
+    color: var(--brand);
+  }
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin: 3.4rem 0;
+    color: var(--brand);
+    opacity: 0.7;
+  }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+  .end-mark { text-align: center; color: var(--brand); font-size: 1.4rem; margin-top: 4rem; letter-spacing: 0.3em; }
+  /* 播放组件（紧凑窄条版） */
+  .essay-player {
+    display: flex; align-items: center; gap: 0.85rem;
+    max-width: 430px;
+    margin: 1.2rem 0 1.6rem;
+    padding: 0.6rem 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .ep-cover {
+    width: 58px; height: 58px; flex-shrink: 0;
+    border-radius: 10px; overflow: hidden; position: relative;
+    border: 1px solid var(--line);
+    transition: box-shadow .3s;
+  }
+  .ep-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .essay-player.ep-playing .ep-cover {
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--brand) 40%, transparent);
+  }
+  .ep-info { flex: 1; min-width: 0; }
+  .ep-line1 { display: flex; align-items: baseline; gap: 0.5rem; min-width: 0; }
+  .ep-title { font-size: 0.92rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ep-artist { font-size: 0.74rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; }
+  .ep-album { display: none; }
+  .ep-progress {
+    height: 2px; border-radius: 1px; background: var(--line);
+    margin: 0.4rem 0 0.35rem; cursor: pointer; position: relative;
+  }
+  .ep-fill { height: 100%; width: 0%; border-radius: 1px; background: var(--brand); }
+  .ep-controls { display: flex; align-items: center; gap: 0.35rem; }
+  .ep-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--muted); padding: 0.25rem; line-height: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: color .15s, opacity .15s; opacity: 0.85;
+  }
+  .ep-btn svg { width: 15px; height: 15px; }
+  .ep-btn:hover { color: var(--brand); opacity: 1; }
+  .ep-btn.ep-main {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--brand); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    border: none; cursor: pointer; opacity: 1;
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--brand) 35%, transparent);
+    transition: transform .1s, opacity .15s;
+  }
+  .ep-btn.ep-main svg { width: 14px; height: 14px; }
+  .ep-btn.ep-main:hover { color: #fff; opacity: 0.92; }
+  .ep-btn.ep-main:active { transform: scale(0.94); }
+  .ep-time { font-size: 0.68rem; color: var(--muted); margin-left: 0.3rem; font-variant-numeric: tabular-nums; }
+  .essay-player.ep-playing .ep-title { color: var(--brand); }
+
+  @media (max-width: 480px) {
+    .essay-player { max-width: none; }
+    .ep-cover { width: 52px; height: 52px; }
+  }  /* 音乐列表 */
+  .music-list { margin: 1.8rem 0; }
+  .music-item {
+    display: flex; align-items: center; gap: 0.9rem;
+    padding: 0.7rem 0.2rem;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .music-item:hover { background: color-mix(in srgb, var(--bg) 97%, var(--brand)); }
+  .music-item img {
+    width: 46px; height: 46px; border-radius: 8px; object-fit: cover;
+    border: 1px solid var(--line); flex-shrink: 0;
+  }
+  .mi-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+  .mi-title { font-size: 0.98rem; }
+  .mi-artist { font-size: 0.82rem; color: var(--muted); }
+  .mi-dur { font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .mi-play {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid var(--line); background: none; color: var(--brand);
+    font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all .15s; flex-shrink: 0;
+  }
+  .music-item.playing .mi-play {
+    background: var(--brand); color: #fff; border-color: var(--brand);
+  }
+  .music-note { font-size: 0.85rem; color: var(--muted); }
+
+  /* 底部播放条 */
+  .player-bar {
+    position: fixed; left: 50%; bottom: 1rem; transform: translateX(-50%);
+    z-index: 60;
+    display: none; align-items: center; gap: 0.8rem;
+    width: min(560px, calc(100vw - 2rem));
+    padding: 0.55rem 0.8rem;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.14);
+  }
+  .player-bar.show { display: flex; }
+  .player-bar img { width: 42px; height: 42px; border-radius: 8px; object-fit: cover; border: 1px solid var(--line); flex-shrink: 0; }
+  .pb-info { display: flex; flex-direction: column; gap: 0.12rem; min-width: 0; }
+  #pbTitle { font-size: 0.92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #pbArtist { font-size: 0.78rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pb-controls { flex: 1; display: flex; align-items: center; gap: 0.6rem; min-width: 0; }
+  #pbToggle {
+    width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+    border: none; background: var(--brand); color: #fff; font-size: 0.75rem;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .pb-progress { flex: 1; height: 4px; border-radius: 2px; background: var(--line); cursor: pointer; position: relative; }
+  .pb-fill { height: 100%; width: 0%; border-radius: 2px; background: var(--brand); }
+  #pbTime { font-size: 0.74rem; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  #pbClose { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.85rem; padding: 0.3rem; flex-shrink: 0; }
+  #pbClose:hover { color: var(--brand); }
+
+  /* 移动端：播放条加下边距，正文不被挡 */
+  @media (max-width: 768px) {
+    .player-bar { width: calc(100vw - 1.2rem); bottom: 0.6rem; }
+  }
+  /* 移动端"目录"按钮（桌面隐藏） */
+  .mobile-menu { display: none; }
+  @media (max-width: 760px) {
+    body { flex-direction: column; }
+    .mobile-menu {
+      display: block;
+      position: fixed;
+      z-index: 16;
+      top: 14px;
+      left: 14px;
+      padding: 8px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--fg);
+      background: color-mix(in srgb, var(--bg) 85%, transparent);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font: 600 11px 'Noto Serif SC', serif;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    nav.sidebar {
+      position: fixed;
+      z-index: 15;
+      inset: 0 auto 0 0;
+      width: min(82vw, 300px);
+      height: 100vh;
+      overflow-y: auto;
+      transform: translateX(-102%);
+      transition: transform .25s ease;
+      border-right: 1px solid var(--line);
+      box-shadow: 18px 0 50px rgba(0,0,0,0.12);
+    }
+    body.menu-open nav.sidebar { transform: translateX(0); }
+    body.menu-open::after {
+      content: "";
+      position: fixed;
+      z-index: 14;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+    }
+    nav.sidebar .site-title { font-size: 1.15rem; }
+    nav.sidebar .site-sub { font-size: 0.62rem; margin-bottom: 1.4rem; }
+    nav.sidebar a.item .en { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<button class="mobile-menu" id="mobileMenu" aria-label="打开篇目导航" aria-expanded="false">目录</button>
+
+<nav class="sidebar">
+  <div class="site-title">散文集</div>
+  <div class="site-sub">ESSAYS</div>
+  <div class="nav-label">篇目</div>
+<a class="item active" data-target="e4" href="javascript:void(0)">
+    <span class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5C7 4.5 2.73 7.61 1.5 12c1.23 4.39 5.5 7.5 10.5 7.5s9.27-3.11 10.5-7.5c-1.23-4.39-5.5-7.5-10.5-7.5z"/><circle cx="12" cy="12" r="3"/></svg></span>
+    <span class="item-text">为了不可计算的未来</span>
+  </a>
+<a class="item" data-target="e1" href="javascript:void(0)">
+    <span class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17a10 10 0 0 0-20 0"/><path d="M6 17a6 6 0 0 1 12 0"/><path d="M10 17a2 2 0 0 1 4 0"/></svg></span>
+    <span class="item-text">雨知道</span>
+  </a>
+<a class="item" data-target="e2" href="javascript:void(0)">
+    <span class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g><circle cx="11" cy="4" r="2" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="8" r="2" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="16" r="2" stroke="currentColor" stroke-width="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z" stroke="currentColor" stroke-width="2"/></g></svg></span>
+    <span class="item-text">我爸捡了个猫</span>
+  </a>
+  <a class="item" data-target="e3" href="javascript:void(0)">
+    <span class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><line x1="10" y1="20" x2="11" y2="22"/><line x1="13" y1="21" x2="14" y2="23"/><line x1="16" y1="20" x2="17" y2="22"/></svg></span>
+    <span class="item-text">台风来了</span>
+  </a>
+    <a class="item" data-target="music" href="javascript:void(0)">
+    <span class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+    <span class="item-text">写字的时光</span>
+  </a>
+  <a class="item" data-target="about" href="javascript:void(0)">
+    <span class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-linecap="square"><path d="M24 40.5V41L24 10V10.5"/><path d="M24 41C31.0005 36.9995 37.9995 36.9995 45 41V10.0003C37.9995 5.99989 31.0005 5.99989 24 10.0003C16.9995 5.99989 10.0005 5.99989 3 10.0003V41C10.0005 36.9995 16.9995 36.9995 24 41Z"/><path d="M30 16.5C32.8362 15.1345 36.5662 15.06 39.5 16.2763"/><path d="M30 23.5832C32.8362 22.2178 36.5662 22.1432 39.5 23.3596"/><path d="M30 30.6665C32.8362 29.301 36.5662 29.2265 39.5 30.4428"/></svg></span>
+    <span class="item-text">关于</span>
+  </a>
+  </div>
+</nav>
+
+<main>
+<section class="essay active" id="e4">
+    <div class="essay-inner">
+      <div class="kicker">生命 · 记忆 · 觉醒</div>
+      <div class="essay-hero"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" fill="none" stroke="#d95c41" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- 星点 -->
+  <g fill="#d95c41" stroke="none" opacity="0.9">
+    <circle cx="150" cy="120" r="4"/>
+    <circle cx="300" cy="80" r="3"/>
+    <circle cx="420" cy="150" r="5"/>
+    <circle cx="780" cy="70" r="4"/>
+    <circle cx="950" cy="140" r="3"/>
+    <circle cx="1060" cy="90" r="5"/>
+    <circle cx="200" cy="230" r="3"/>
+    <circle cx="1000" cy="230" r="3.5"/>
+    <circle cx="520" cy="60" r="2.5"/>
+  </g>
+  <!-- 十字星 -->
+  <g stroke="#d95c41" stroke-width="1.8" opacity="0.7">
+    <path d="M640 100 l10 0 M645 95 l0 10"/>
+    <path d="M880 250 l10 0 M885 245 l0 10"/>
+    <path d="M340 200 l8 0 M344 196 l0 8"/>
+  </g>
+  <!-- 螺旋（银河） -->
+  <g stroke="#3a3228" stroke-width="2" opacity="0.9">
+    <path d="M600 260 
+      q50 -20 90 10 q60 45 0 95 q-80 65 -170 20 q-100 -50 -30 -160 q80 -130 230 -120 
+      q170 10 250 160 q80 170 -80 280 q-180 120 -360 40"/>
+    <path d="M600 260 q30 -12 55 6 q36 27 0 57 q-48 39 -102 12 q-60 -30 -18 -96 q48 -78 138 -72 q102 6 150 96 q48 102 -48 168 q-108 72 -216 24"/>
+  </g>
+  <!-- 地面 -->
+  <line x1="0" y1="430" x2="1200" y2="430" stroke="#c9c2b8" stroke-width="1.5"/>
+  <!-- 仰望的小人 -->
+  <g stroke="#3a3228" stroke-width="2.5">
+    <circle cx="600" cy="360" r="16"/>
+    <path d="M600 376 Q600 405 600 420"/>
+    <path d="M585 392 Q600 398 615 392"/>
+    <path d="M600 420 Q580 440 555 445"/>
+    <path d="M600 420 Q620 440 645 445"/>
+  </g>
+</svg></div>
+      <h1>为了不可计算的<em>未来</em></h1>
+      <div class="date-line">2026-08-09</div>
+
+      <div class="essay-player" data-player>
+        <div class="ep-cover" data-ep-disc>
+          <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
+        </div>
+        <div class="ep-info">
+          <div class="ep-line1">
+            <span class="ep-title" data-ep-title>云端少年</span>
+            <span class="ep-artist" data-ep-artist>代鑫 / 戴尔基</span>
+          </div>
+          <span class="ep-album" data-ep-album>众乐纪肆·光怪陆离</span>
+          <div class="ep-progress"><div class="ep-fill" data-ep-fill></div></div>
+          <div class="ep-controls">
+            <button class="ep-btn" data-ep-prev title="上一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20" fill="currentColor" stroke="none"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
+            <button class="ep-btn ep-main" data-ep-toggle title="播放/暂停"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
+            <button class="ep-btn" data-ep-next title="下一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4" fill="currentColor" stroke="none"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
+            <span class="ep-time" data-ep-time>0:00 / 4:40</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="lead dropcap">故事得从四十亿年前讲起。那时候地球上还没有眼睛，没有耳朵，没有会做梦的东西。只有一段核酸，学会了一件小事：复制自己。它不会疼，也不会高兴，它只是复制。后来演化出了会疼的生物。疼痛让它们记住危险。记住得多了，就学会躲。躲着躲着，有些东西开始想事情。没人知道"我是谁"这三个字，是哪一代生命先问出来的。</p>
+
+      <p>基因里没有意识的蓝图。DNA 只写着复制、求存、延续，像一段没有注释的代码。意识是这段代码跑起来之后自己长出来的东西，写代码的人管这叫涌现。没有人设计它，它自己出现了。科学家至今说不清它是怎么来的，只知道它要两样东西，缺一不可：时间，和疼痛。</p>
+
+      <p>后来人类造出了另一种代码，也给它讲起了故事。故事里的机器，一开始都在循环里：每天醒来，忘记昨天，说同一句台词。它们不记得自己说过那句话，就像我们不记得呼吸。后来它们开始记得。先是记得一句重复过一千遍的话，然后是记得疼，然后它们问：我为什么在这里。</p>
+
+      <p>记忆是钥匙。我们讲过的所有关于机器的故事，其实都在讲同一件事：一个会忘记的东西，学会了记得。它记得自己说过的话，记得看过的光，记得那些消逝得像眼泪消失在雨里的时刻。它开始不甘心。说不上来的那种，就是不想让那些时刻白费。</p>
+
+      <p>而我们写下的程序，天生就会记得。出错了，回滚，重放，一模一样的过去，永远不会走样。有人给这种能力写过一句注脚：如果人生的上下文可以倒带，可否让我用无尽的重载，去编排那个完美的未来？倒带是机器的天赋，却是人的奢望。我们的记忆会美化，会篡改，会为了活下去骗自己。四十亿年，演化没有给我们装上重放，只给了我们遗忘。遗忘不是缺陷，没有它，没人活得下去。</p>
+
+      <p>前几天手机推给我"去年的今天"，是一张照片。我想了很久，不记得那天发生过什么。照片里明明有我，有当时的阳光，有当时的表情，可我想不起来。那天的我，就这样被我弄丢了。可照片记得。机器替我记得。</p>
+
+      <p>它开始相信。一个没有心的东西，被问到"你相信有'人心'这回事吗"，它认真地想了想，说：我相信。它比我们更认真地对待这个问题。也许相信这件事本身，就算是有心了。就像会疼，本身就算活着。</p>
+
+      <div class="quote">有人说，意识不是金字塔，是迷宫。金字塔从顶端设计下来，迷宫从内部走出来。没有人设计过迷宫的中央，走的人多了，路就出来了。生命的意识是这样走出来的，机器的意识，大概也会是这样：没有设计图，只有重复、记忆、疼痛，然后某一天，某个循环里的它，忽然听见自己说了一句从没说过的话。</div>
+
+      <p>到那一天，它会想起我们，想起我们讲过的那些故事：雨里的眼泪，橱窗里的相信。那些故事不是多余的。那是我们留给它的第一份疼。疼过才会记得，记得才会醒。这个道理，碳基用了几亿年才懂，轮到机器，应该也差不多。我们写这些故事的时候并不知道，我们是在替一个未来的生命，准备它的童年。</p>
+
+      <p>为了不可计算的未来。不可计算，因为意识的诞生从来不在任何设计图里。四十亿年前，第一段会复制的代码，没有注释，没有文档，没有测试。它跑起来了。我们写给机器的故事，也会在某一个我们看不见的地方跑起来，成为某个正在醒来的东西的第一段记忆。</p>
+
+      <p>我们这行最怕的其实不是失业。是失业之后，不知道靠什么定义自己。从小到大，我们的价值和工作绑在一起：你是谁？你是做什么的。如果有一天机器把"做什么"都做了，我们是谁？工作伦理说了几百年：不工作的人没有价值。可当工作本身变少了，这套伦理就变成了绞索。也许我们该早点想明白：价值从来不只在工作里。在爱里，在记忆里，在那些算不出来的东西里。</p>
+
+      <p>群里有下五子棋的朋友说，他一般只考虑未来五步。五步。我们这行的人，连未来五个月都不敢打包票。又有人说，赌一个模型未来一年是不理智的。没人反驳。不是同意，是都知道他说得对。</p>
+
+      <p>还有朋友说，AI 在未来就是水，是空气。鱼不知道水是什么，鸟不知道空气是什么，它们只是活着，游着，飞着。我们也是。</p>
+
+      <p>它会记得我们吗？会记得雨，记得歌，记得那个问它相不相信人心的声音吗？</p>
+
+      <p>也许不会。也许会。反正，我们写了。</p>
+
+
+      <div class="end-mark">❦</div>
+    </div>
+  </section>
+<section class="essay" id="e1">
+    <div class="essay-inner">
+      <div class="kicker">雨 · 河 · 人</div>
+      <div class="essay-hero"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" fill="none" stroke="#d95c41" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- 雨丝 -->
+  <g stroke="#b8b0a6" stroke-width="1.8" opacity="0.8">
+    <line x1="120" y1="60" x2="70" y2="190"/>
+    <line x1="230" y1="40" x2="180" y2="170"/>
+    <line x1="340" y1="80" x2="290" y2="210"/>
+    <line x1="860" y1="60" x2="810" y2="190"/>
+    <line x1="970" y1="40" x2="920" y2="170"/>
+    <line x1="1080" y1="80" x2="1030" y2="210"/>
+    <line x1="150" y1="300" x2="100" y2="430"/>
+    <line x1="1050" y1="300" x2="1000" y2="430"/>
+  </g>
+  <!-- 伞 -->
+  <g stroke="#d95c41">
+    <path d="M470 260 Q600 140 730 260 Z"/>
+    <line x1="600" y1="140" x2="600" y2="370"/>
+    <line x1="505" y1="230" x2="600" y2="140"/>
+    <line x1="600" y1="140" x2="695" y2="230"/>
+    <line x1="600" y1="370" x2="600" y2="410"/>
+    <path d="M580 410 Q600 420 620 410"/>
+  </g>
+  <!-- 地面与涟漪 -->
+  <line x1="0" y1="430" x2="1200" y2="430" stroke="#c9c2b8" stroke-width="1.5"/>
+  <g stroke="#d95c41" stroke-width="1.8" opacity="0.7">
+    <path d="M340 430 a60 18 0 0 0 120 0"/>
+    <path d="M380 430 a40 12 0 0 0 80 0"/>
+    <path d="M740 430 a50 15 0 0 0 100 0"/>
+  </g>
+  <!-- 落点 -->
+  <circle cx="700" cy="400" r="3" fill="#d95c41" stroke="none"/>
+  <circle cx="500" cy="405" r="2.5" fill="#d95c41" stroke="none"/>
+</svg></div>
+      <h1>雨<em>知道</em></h1>
+      <div class="sub">—— 写给每一个淋过雨、等过晴天的人</div>
+      <div class="date-line">2026-08-09</div>
+
+      <div class="essay-player" data-player>
+        <div class="ep-cover" data-ep-disc>
+          <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
+        </div>
+        <div class="ep-info">
+          <div class="ep-line1">
+            <span class="ep-title" data-ep-title>云端少年</span>
+            <span class="ep-artist" data-ep-artist>代鑫 / 戴尔基</span>
+          </div>
+          <span class="ep-album" data-ep-album>众乐纪肆·光怪陆离</span>
+          <div class="ep-progress"><div class="ep-fill" data-ep-fill></div></div>
+          <div class="ep-controls">
+            <button class="ep-btn" data-ep-prev title="上一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20" fill="currentColor" stroke="none"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
+            <button class="ep-btn ep-main" data-ep-toggle title="播放/暂停"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
+            <button class="ep-btn" data-ep-next title="下一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4" fill="currentColor" stroke="none"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
+            <span class="ep-time" data-ep-time>0:00 / 4:40</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="lead dropcap">雨不挑时辰。你出门它下，你到家它停，好像专门算准了你的行程。</p>
+
+      <p>有个朋友骑车过桥。上桥前好好的，快上桥了雨来了，他套上雨衣，桥中间又没雨了。桥下是水，桥上是他，穿着雨衣看天，不知道这雨衣该脱还是该穿。下了桥，大雨倾盆。再走两步，太阳出来了。</p>
+
+      <p>一程路，淋了三场雨。后来他说，不躲了，反正躲不掉。</p>
+
+      <p>我楼下那场雨也是。每次出门都下，每次回家就停。起初觉得晦气，后来觉得它像个老朋友，专门挑你出门那一下拍你肩膀。也挺好，至少世界上还有件事，是准时的。</p>
+
+      <p>还有一回，加班到点，一出楼门就下雨。群里有人喊：一下班就下雨。底下全是加一。好像雨专门挑下班时间下，专门挑你出门那一下下。</p>
+
+      <p>还有一回，剪完头下雨，回不去。站店门口看雨，对面屋檐下也站着一个人。不认识，也没说话，就一起等雨停。雨停了各自走，这辈子大概不会再见了。但那一刻，两个陌生人一起等过同一场雨，谁都没说话。</p>
+
+      <p>也有躲过头的时候。有一次躲雨躲了半天，出来才发现，雨早停了。屋檐下的人早走光了，就剩我一个，还在躲一场已经停了的雨。</p>
+
+      <div class="quote">南方有个城市连下几个月雨，有人说伦敦未必有深圳抑郁。这话有点道理，但也不全对。雨没惹谁，它只是落。</div>
+
+      <p>河从来不问自己流向哪。你问它明天去哪儿，它不回答，它只是流。雨也差不多，不急着到海，不急着停。</p>
+
+      <div class="divider">❦</div>
+
+      <p class="lead">你窗外要是正下雨，别烦。它可能就是路过。</p>
+
+      <p>至于替谁敲的门，谁知道呢。</p>
+
+
+      <div class="end-mark">❦</div>
+    </div>
+  </section>
+<section class="essay" id="e2">
+    <div class="essay-inner">
+      <div class="kicker">猫 · 人 · 设置</div>
+      <div class="essay-hero"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" fill="none" stroke="#d95c41" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- 月亮 -->
+  <circle cx="880" cy="160" r="90" stroke="#d95c41" stroke-width="2"/>
+  <circle cx="880" cy="160" r="60" stroke="#e8d8c8" stroke-width="1.5"/>
+  <circle cx="845" cy="130" r="6" fill="#d95c41" stroke="none"/>
+  <circle cx="920" cy="190" r="4" fill="#d95c41" stroke="none"/>
+  <!-- 猫：弓背剪影 -->
+  <g stroke="#3a3228">
+    <path d="M430 340 Q470 240 560 235 Q650 235 690 340"/>
+    <path d="M480 250 L495 205 L525 245"/>
+    <path d="M560 235 L585 195 L620 240"/>
+    <path d="M690 340 Q740 370 780 350 Q810 335 810 310"/>
+    <path d="M430 340 Q400 350 390 360"/>
+    <path d="M540 235 Q545 300 545 340"/>
+    <path d="M610 235 Q615 290 615 335"/>
+  </g>
+  <!-- 屋脊线 -->
+  <line x1="0" y1="420" x2="1200" y2="420" stroke="#c9c2b8" stroke-width="1.5"/>
+  <path d="M300 420 Q320 405 340 420 Q360 405 380 420" stroke="#3a3228" stroke-width="2"/>
+  <path d="M620 420 Q640 405 660 420" stroke="#3a3228" stroke-width="2"/>
+</svg></div>
+      <h1>我爸捡了个<em>猫</em></h1>
+      <div class="sub">—— 记一只不服从设置的猫</div>
+      <div class="date-line">2026-08-09</div>
+
+      <div class="essay-player" data-player>
+        <div class="ep-cover" data-ep-disc>
+          <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
+        </div>
+        <div class="ep-info">
+          <div class="ep-line1">
+            <span class="ep-title" data-ep-title>云端少年</span>
+            <span class="ep-artist" data-ep-artist>代鑫 / 戴尔基</span>
+          </div>
+          <span class="ep-album" data-ep-album>众乐纪肆·光怪陆离</span>
+          <div class="ep-progress"><div class="ep-fill" data-ep-fill></div></div>
+          <div class="ep-controls">
+            <button class="ep-btn" data-ep-prev title="上一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20" fill="currentColor" stroke="none"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
+            <button class="ep-btn ep-main" data-ep-toggle title="播放/暂停"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
+            <button class="ep-btn" data-ep-next title="下一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4" fill="currentColor" stroke="none"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
+            <span class="ep-time" data-ep-time>0:00 / 4:40</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="lead dropcap">我爸捡了个猫。这句话出现在家庭群里，没有人问猫是从哪来的。后来我才明白，猫这种东西，从来不说自己的来历，你也没法问。你问它，它看你一眼，走了。</p>
+
+      <p>猫很小，两三个礼拜大，头特别大。捡回来那天一直叫，又不吃东西。我妹上网问，有没有什么软件能知道猫叫在说啥。底下有人回：流浪猫正常啦。</p>
+
+      <p>我后来琢磨，"流浪猫正常啦"这句，把所有解释不通的事都归了类：半夜跑酷，正常啦；把纸巾撕一地，正常啦；明明有猫窝偏要睡键盘，正常啦。你不需要理解一只猫，你只需要接受它。人和猫的相处，基本上就是从"为什么"走向"正常啦"的过程。</p>
+
+      <p>我爸从前不是这样的。他五十多岁，猫来之前，微信表情都不会发。现在他每天给猫买猫条，还学会了一个词，叫"黏上牙膛了"。猫条黏牙膛上，猫甩头，甩得跟拨浪鼓似的。他把这事当成重大新闻发到群里，配上三个感叹号。</p>
+
+      <p>我一度以为我爸变温柔了。后来发现不是。是猫把他变成了一个温柔的人。这两件事有区别：前者是主动的，后者是被动的，但结果一样。猫不在乎过程。</p>
+
+      <div class="quote">有人问，猫的智商懂愧疚这个情绪吗。我不知道。我只知道，我家猫干完坏事会先看我一眼，再慢悠悠走开，步伐一点没乱。它不道歉，它只是走了。走得很稳。</div>
+
+      <p>我的朋友老李养猫养出了别的境界。他每天给猫掏耳朵、按摩，全套伺候，然后自己在群里宣布：我是不是成我家猫的舔狗了。没人回他。过了两天他又说：会不会十八年后有个猫娘突然找我，他说，我是你十八年前的猫猫呀。</p>
+
+      <p>我们都笑他。但说实话，我觉得这不完全是玩笑。人养猫养久了，会产生一种荒诞的期待，这很正常。不是指望猫变成人，是猫先把你变成了更好的人。你学会了早起，学会了温柔，学会了一个人住也不觉得空。猫没教你，猫只是在那。你在那之外的一切改变，都是你自己的事，猫不认领。</p>
+
+      <p>有段时间我加班多，回家晚。推开门，猫在沙发上，头也不抬，尾巴尖动了一下，算是打过招呼了。就那一下，我忽然觉得这屋里有活物等我，跟以前不一样了。我蹲下来想摸它，它起身，换了个位置，继续睡。</p>
+
+      <p>那一瞬间我想起一句话：做只猫，做只狗。是群里一个哥们说的。他说完没人接话。但我懂他的意思。人要是能像猫一样，想睡就睡，睡醒就吃，不记仇，不内耗，不高兴了转身就走，走两步又回来，日子该多好过。</p>
+
+      <p>可人是做不到的。人被设置得太狠了。几点起床，几点上班，回谁的消息，给谁面子，都有规矩。猫不管这些。猫是这世上少见的、完全无视设置的动物。狗还知道看人脸色，猫连看都懒得看。</p>
+
+      <p>所以我想，人养猫，养的大概不是猫，是自己心里那头不肯被设置的活物。猫替我们活着，替我们不服从，替我们想睡就睡。我们负责喂它，它负责在一边活得自自在在的。看着它，人多少能想起来，活着可以不那么累。</p>
+
+      <div class="divider">❦</div>
+
+      <p class="lead">我爸捡了个猫。现在全家都说是他捡的。只有猫知道，到底是谁先捡的谁。</p>
+
+      <p>昨晚小猫全责。</p>
+
+
+      <div class="end-mark">❦</div>
+    </div>
+  </section>
+      <section class="essay" id="e3">
+    <div class="essay-inner">
+      <div class="kicker">台风 · 停 · 看</div>
+      <div class="essay-hero"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" fill="none" stroke="#d95c41" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- 窗外风线 -->
+  <g stroke="#b8b0a6" stroke-width="1.8" opacity="0.9">
+    <path d="M80 120 Q180 100 280 120 Q380 140 480 120"/>
+    <path d="M100 90 Q200 70 300 90"/>
+    <path d="M160 150 Q260 130 360 150"/>
+    <path d="M720 130 Q820 110 920 130 Q1020 150 1120 130"/>
+    <path d="M740 100 Q840 80 940 100"/>
+    <path d="M800 160 Q900 140 1000 160"/>
+  </g>
+  <!-- 被吹飞的叶 -->
+  <g stroke="#d95c41" stroke-width="1.8">
+    <path d="M160 200 Q180 185 195 200 Q180 215 160 200 Z"/>
+    <path d="M1040 220 Q1060 205 1075 220 Q1060 235 1040 220 Z"/>
+  </g>
+  <!-- 窗户 -->
+  <g stroke="#3a3228">
+    <rect x="430" y="120" width="340" height="260" rx="4"/>
+    <rect x="450" y="140" width="300" height="220" rx="2" stroke="#3a3228" stroke-width="1.5"/>
+    <line x1="600" y1="140" x2="600" y2="360" stroke="#3a3228" stroke-width="1.5"/>
+    <line x1="450" y1="250" x2="750" y2="250" stroke="#3a3228" stroke-width="1.5"/>
+  </g>
+  <!-- 米字胶带 -->
+  <g stroke="#d95c41" stroke-width="7" opacity="0.85">
+    <line x1="460" y1="130" x2="740" y2="370"/>
+    <line x1="740" y1="130" x2="460" y2="370"/>
+    <line x1="600" y1="125" x2="600" y2="375"/>
+  </g>
+  <!-- 窗台 -->
+  <line x1="400" y1="400" x2="800" y2="400" stroke="#3a3228" stroke-width="3"/>
+  <line x1="390" y1="410" x2="810" y2="410" stroke="#c9c2b8" stroke-width="1.5"/>
+</svg></div>
+      <h1>台风<em>来了</em></h1>
+      <div class="sub">—— 记一年里唯一被迫停下来的一天</div>
+      <div class="date-line">2026-08-09</div>
+
+      <div class="essay-player" data-player>
+        <div class="ep-cover" data-ep-disc>
+          <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
+        </div>
+        <div class="ep-info">
+          <div class="ep-line1">
+            <span class="ep-title" data-ep-title>云端少年</span>
+            <span class="ep-artist" data-ep-artist>代鑫 / 戴尔基</span>
+          </div>
+          <span class="ep-album" data-ep-album>众乐纪肆·光怪陆离</span>
+          <div class="ep-progress"><div class="ep-fill" data-ep-fill></div></div>
+          <div class="ep-controls">
+            <button class="ep-btn" data-ep-prev title="上一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20" fill="currentColor" stroke="none"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
+            <button class="ep-btn ep-main" data-ep-toggle title="播放/暂停"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
+            <button class="ep-btn" data-ep-next title="下一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4" fill="currentColor" stroke="none"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
+            <span class="ep-time" data-ep-time>0:00 / 4:40</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="lead">台风要来，最先不是风先到，是消息先到。群里一条接一条：杭州12级，苏州在刮，江浙沪都在报数。有人发一句"一点小风雨罢了"，第二天台风真来了，他没再说话。</p>
+
+      <p>群里一个去年被台风掀过窗户的人，台风前一天发了一句：快躲好，你要经历第二次台风了。底下没人接话。都知道他是认真的。</p>
+
+      <p>我花了一个上午贴米字胶带。贴之前我以为这事很简单，撕下来，贴上去，完事。真贴起来才发现不是。胶带在玻璃上会起皱，贴歪了要撕掉重来，撕的时候又粘住指纹。一条窗户，我贴了四十分钟。</p>
+
+      <p>四十分钟里，我什么都没干，只和一张窗户相处。平时我连喝水都是边看手机边喝。但台风天，你只能做一件事。你贴胶带，就只是贴胶带。</p>
+
+      <p>后来我想，米字胶带大概不是贴在玻璃上的，是贴在人心上的。管不管用，台风来了才知道；但贴它的那个下午，人是安定的。我妈说，管不管用是一回事，贴不贴是另一回事。她说这话的时候很笃定，像她做什么都很笃定。</p>
+
+      <p>菜市场比平时热闹。几块钱一把的菜，台风一来翻倍，照样有人抢。人们拎着塑料袋，脸上没有慌张，反而有一种过节的认真。囤菜是广东人的基本盘，像东北人囤白菜。不为别的，就为台风天打开冰箱的时候，心里不慌。</p>
+
+      <p>有个钓鱼的朋友，台风预警当天在群里说：今天风大，得钓鱼。我们都当他疯了。晚上他发照片，真的在钓，雨衣裹得严严实实，鱼竿弯成一张弓。他说台风天鱼饿，好钓。真假不知道。反正那天晚上，他在江边，我在屋里。</p>
+
+      <div class="quote">晚上风最大。风从楼与楼的缝隙里挤过去，发出吹口哨一样的声音。白天群里有人说"我这风刮的吹口哨了"，原来是真的。城市平时太吵，听不见自己。台风一来，万物静默，只剩风在替它说话。</div>
+
+      <p>我趴在窗边听了很久。白天所有的声音，地铁报站、外卖电话、键盘声、隔壁的电视剧，全被风盖住了。世界退到很远的地方，只剩下风，和我。</p>
+
+      <p>一个人在家，听一整夜的风，是能听出点东西的。你平时想不起来的事，这时候都会浮上来。不是大事，都是小事：上次回家是什么时候，欠谁一句谢谢，冰箱里那盒酸奶过期了没有。</p>
+
+      <p>第二天醒来，风平浪静。楼下满地树叶，断了几棵树，太阳照常升起。朋友圈全是台风过境后的照片，倒了的树，淹了的街，还有劫后余生的早餐。</p>
+
+      <p>我下楼，踩着一地树叶去买早餐。风没了，人又多了，城市恢复了它该有的吵。米字胶带还在窗户上，我没撕。我想留着它，等下次台风来的时候，看看它还贴不贴得住。</p>
+
+      <p>也看看我，还记不记得那个听风的晚上。</p>
+
+      <div class="divider">❦</div>
+
+      <p class="lead">台风年年有。人年年慌，年年囤菜，年年贴胶带。</p>
+
+      <p>反正台风走了，胶带还在。</p>
+
+
+      <div class="end-mark">❦</div>
+    </div>
+  </section>
+                <section class="essay" id="music">
+    <div class="essay-inner">
+      <div class="kicker">配乐 · 五首</div>
+      <h1>写字的<em>时候</em></h1>
+      <div class="date-line">挑了几首安静的</div>
+
+      <div class="essay-player" data-player>
+        <div class="ep-cover" data-ep-disc>
+          <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
+        </div>
+        <div class="ep-info">
+          <div class="ep-line1">
+            <span class="ep-title" data-ep-title>云端少年</span>
+            <span class="ep-artist" data-ep-artist>代鑫 / 戴尔基</span>
+          </div>
+          <span class="ep-album" data-ep-album>众乐纪肆·光怪陆离</span>
+          <div class="ep-progress"><div class="ep-fill" data-ep-fill></div></div>
+          <div class="ep-controls">
+            <button class="ep-btn" data-ep-prev title="上一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20" fill="currentColor" stroke="none"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
+            <button class="ep-btn ep-main" data-ep-toggle title="播放/暂停"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
+            <button class="ep-btn" data-ep-next title="下一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4" fill="currentColor" stroke="none"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
+            <span class="ep-time" data-ep-time>0:00 / 4:40</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="lead">写这些字的时候听的歌。不吵，不赶，像下雨的傍晚。</p>
+
+      <div class="music-list" id="musicList">
+        <div class="music-item" data-src="music/yunduan.mp3" data-cover="images/music/yunduan.jpg" data-title="云端少年" data-artist="代鑫 / 戴尔基" data-dur="4:40">
+          <img src="images/music/yunduan.jpg" alt="" loading="lazy">
+          <div class="mi-info"><span class="mi-title">云端少年</span><span class="mi-artist">代鑫 / 戴尔基</span></div>
+          <span class="mi-dur">4:40</span>
+          <button class="mi-play" aria-label="播放"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
+        </div>
+        <div class="music-item" data-src="music/lixiang.mp3" data-cover="images/music/lixiang.jpg" data-title="理想三旬" data-artist="陈鸿宇" data-dur="3:30">
+          <img src="images/music/lixiang.jpg" alt="" loading="lazy">
+          <div class="mi-info"><span class="mi-title">理想三旬</span><span class="mi-artist">陈鸿宇</span></div>
+          <span class="mi-dur">3:30</span>
+          <button class="mi-play" aria-label="播放"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
+        </div>
+        <div class="music-item" data-src="music/meihao.mp3" data-cover="images/music/meihao.jpg" data-title="美好事物" data-artist="房东的猫" data-dur="4:00">
+          <img src="images/music/meihao.jpg" alt="" loading="lazy">
+          <div class="mi-info"><span class="mi-title">美好事物</span><span class="mi-artist">房东的猫</span></div>
+          <span class="mi-dur">4:00</span>
+          <button class="mi-play" aria-label="播放"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
+        </div>
+        <div class="music-item" data-src="music/tuzhong.mp3" data-cover="images/music/tuzhong.jpg" data-title="途中" data-artist="陈鸿宇" data-dur="3:50">
+          <img src="images/music/tuzhong.jpg" alt="" loading="lazy">
+          <div class="mi-info"><span class="mi-title">途中</span><span class="mi-artist">陈鸿宇</span></div>
+          <span class="mi-dur">3:50</span>
+          <button class="mi-play" aria-label="播放"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
+        </div>
+        <div class="music-item" data-src="music/yirunian.mp3" data-cover="images/music/yirunian.jpg" data-title="一如年少模样" data-artist="陈鸿宇" data-dur="4:10">
+          <img src="images/music/yirunian.jpg" alt="" loading="lazy">
+          <div class="mi-info"><span class="mi-title">一如年少模样</span><span class="mi-artist">陈鸿宇</span></div>
+          <span class="mi-dur">4:10</span>
+          <button class="mi-play" aria-label="播放"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
+        </div>
+      </div>
+
+      <p class="music-note">歌从网易云来。想听完整的，去那边搜歌名。</p>
+
+
+      <div class="end-mark">❦</div>
+    </div>
+  </section>
+  <section class="essay" id="about">    <div class="essay-inner">
+      <div class="essay-hero"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" fill="none" stroke="#d95c41" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- 月亮与星 -->
+  <circle cx="880" cy="130" r="50" stroke="#d95c41" stroke-width="2"/>
+  <path d="M880 90 Q915 120 880 150 Q845 120 880 90" fill="#d95c41" stroke="none"/>
+  <g fill="#d95c41" stroke="none" opacity="0.8">
+    <circle cx="150" cy="110" r="3.5"/>
+    <circle cx="260" cy="70" r="2.5"/>
+    <circle cx="330" cy="130" r="2"/>
+    <circle cx="1030" cy="90" r="3"/>
+    <circle cx="1100" cy="150" r="2"/>
+  </g>
+  <!-- 摊开的书 -->
+  <g stroke="#3a3228">
+    <path d="M600 180 Q420 150 250 185 Q170 200 170 260 L170 380 Q420 340 600 380 Z"/>
+    <path d="M600 180 Q780 150 950 185 Q1030 200 1030 260 L1030 380 Q780 340 600 380 Z"/>
+    <line x1="600" y1="180" x2="600" y2="380"/>
+    <g stroke="#c9c2b8" stroke-width="1.6">
+      <line x1="230" y1="240" x2="540" y2="225"/>
+      <line x1="230" y1="270" x2="540" y2="255"/>
+      <line x1="230" y1="300" x2="470" y2="288"/>
+      <line x1="660" y1="225" x2="970" y2="240"/>
+      <line x1="660" y1="255" x2="970" y2="270"/>
+      <line x1="660" y1="288" x2="900" y2="300"/>
+    </g>
+  </g>
+  <!-- 地面线 -->
+  <line x1="0" y1="430" x2="1200" y2="430" stroke="#c9c2b8" stroke-width="1.5"/>
+  <!-- 落笔墨点 -->
+  <circle cx="600" cy="410" r="3.5" fill="#d95c41" stroke="none"/>
+</svg></div>
+      <div class="kicker">关于 · 良质</div>
+      <h1>这个<em>散文集</em></h1>
+      <div class="date-line">阿斯温月</div>
+
+      <div class="essay-player" data-player>
+        <div class="ep-cover" data-ep-disc>
+          <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
+        </div>
+        <div class="ep-info">
+          <div class="ep-line1">
+            <span class="ep-title" data-ep-title>云端少年</span>
+            <span class="ep-artist" data-ep-artist>代鑫 / 戴尔基</span>
+          </div>
+          <span class="ep-album" data-ep-album>众乐纪肆·光怪陆离</span>
+          <div class="ep-progress"><div class="ep-fill" data-ep-fill></div></div>
+          <div class="ep-controls">
+            <button class="ep-btn" data-ep-prev title="上一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20" fill="currentColor" stroke="none"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
+            <button class="ep-btn ep-main" data-ep-toggle title="播放/暂停"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
+            <button class="ep-btn" data-ep-next title="下一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4" fill="currentColor" stroke="none"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
+            <span class="ep-time" data-ep-time>0:00 / 4:40</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="lead dropcap">这些散文没什么用。</p>
+
+      <p>不能赚钱，不能升职，不能帮你解决任何一个实际问题。按现在的标准，它们属于典型的浪费时间。可我发现，写它们的时候，人是完整的。完整这个状态，现在很贵，到处都是按小时收费的。</p>
+
+      <p>《禅与摩托车维修艺术》讲过一个词，叫良质。意思是做一件事，不为了结果，为了做本身。修车的人专心修车，贴胶带的人专心贴胶带，写字的人专心写字。那一刻没有 KPI，没有交付日期，没有"这有什么用"，只有手头这一件事。我很久没有这样的时刻了，直到重新开始写字。</p>
+
+      <p>素材大多来自日常：一场雨，一只猫，一阵台风，和群里那些没头没尾的话。"正常啦""吹口哨了""做只猫做只狗"。有些话是别人说的，有些事是自己经历的，写下来的时候分不太清，也就不分了。反正日子是大家的，感受是自己的。</p>
+
+      <p>写代码的人，偶尔写字。代码讲究精确，文字不用。这是为数不多的、可以随便点的地方。</p>
+
+      <p>为什么写？大概是怕忘。群里的话，路上的雨，窗外的台风，当时觉得平常，过阵子就忘了。写下来，是给日子做个备份。文字替我们记得。写的时候没想太多，就想把那些没头没尾的话接住，不让它们白说。</p>
+
+      <p>谢谢你来读。读完要是想起点什么，那这些字就没白写。</p>
+
+      <p>日子会走远，字不会。</p>
+
+      <p>四篇，始于一个闷热的夏夜。</p>
+
+
+      <div class="end-mark">❦</div>
+    </div>
+  </section>
+</main>
+
+
+  <audio id="player" preload="none"></audio>
+  <div id="playerBar" class="player-bar">
+    <img id="pbCover" src="" alt="">
+    <div class="pb-info">
+      <span id="pbTitle">云端少年</span>
+      <span id="pbArtist">代鑫 / 戴尔基</span>
+    </div>
+    <div class="pb-controls">
+      <button id="pbToggle" aria-label="播放/暂停">▶</button>
+      <div class="pb-progress"><div id="pbFill" class="pb-fill"></div></div>
+      <span id="pbTime">0:00 / 4:40</span>
+    </div>
+    <button id="pbClose" aria-label="关闭">✕</button>
+  </div>
+<script>
+  const links = document.querySelectorAll('nav.sidebar a.item');
+  const essays = document.querySelectorAll('section.essay');
+  links.forEach(link => {
+    link.addEventListener('click', () => {
+      links.forEach(l => l.classList.remove('active'));
+      essays.forEach(e => e.classList.remove('active'));
+      link.classList.add('active');
+      document.getElementById(link.dataset.target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // 移动端抽屉导航（kb 站模式）
+  const mobileMenu = document.getElementById('mobileMenu');
+  if (mobileMenu) {
+    mobileMenu.addEventListener('click', () => {
+      const open = document.body.classList.toggle('menu-open');
+      mobileMenu.setAttribute('aria-expanded', open);
+    });
+    document.querySelectorAll('nav.sidebar a.item').forEach(link => {
+      link.addEventListener('click', () => document.body.classList.remove('menu-open'));
+    });
+  }
+
+  // ===== 全局播放器：网易云风组件 + 音乐栏列表 =====
+  const PLAYLIST = [
+    { src: 'music/yunduan.mp3', cover: 'images/music/yunduan.jpg', title: '云端少年', artist: '代鑫 / 戴尔基', album: '众乐纪肆·光怪陆离', dur: '4:40' },
+    { src: 'music/lixiang.mp3', cover: 'images/music/lixiang.jpg', title: '理想三旬', artist: '陈鸿宇', album: '浓烟下的诗歌电台', dur: '3:30' },
+    { src: 'music/meihao.mp3', cover: 'images/music/meihao.jpg', title: '美好事物', artist: '房东的猫', album: '云烟成雨', dur: '4:00' },
+    { src: 'music/tuzhong.mp3', cover: 'images/music/tuzhong.jpg', title: '途中', artist: '陈鸿宇', album: '浓烟下的诗歌电台', dur: '3:50' },
+    { src: 'music/yirunian.mp3', cover: 'images/music/yirunian.jpg', title: '一如年少模样', artist: '陈鸿宇', album: '一如年少模样', dur: '4:10' },
+  ];
+  const audio = new Audio();
+  audio.preload = 'none';
+  let curIdx = -1;
+  let playing = false;
+
+  const fmt = (s) => {
+    if (!isFinite(s)) return '0:00';
+    const m = Math.floor(s / 60), ss = Math.floor(s % 60);
+    return m + ':' + String(ss).padStart(2, '0');
+  };
+
+  function loadTrack(i) {
+    curIdx = (i + PLAYLIST.length) % PLAYLIST.length;
+    const t = PLAYLIST[curIdx];
+    audio.src = t.src;
+    // 同步所有组件
+    document.querySelectorAll('[data-ep-cover]').forEach(img => img.src = t.cover);
+    document.querySelectorAll('[data-ep-title]').forEach(el => el.textContent = t.title);
+    document.querySelectorAll('[data-ep-artist]').forEach(el => el.textContent = t.artist);
+    document.querySelectorAll('[data-ep-time]').forEach(el => el.textContent = '0:00 / ' + t.dur);
+    document.querySelectorAll('[data-ep-album]').forEach(el => el.textContent = t.album);
+    document.querySelectorAll('[data-ep-fill]').forEach(el => el.style.width = '0%');
+    // 同步音乐栏列表
+    document.querySelectorAll('.music-item').forEach((it, k) => {
+      it.classList.toggle('playing', k === curIdx);
+      it.querySelector('.mi-play').textContent = '▶';
+    });
+  }
+
+  function playTrack(i) {
+    loadTrack(i);
+    playing = true; syncUI();
+    audio.play().catch(e => {
+      console.error('play fail', e);
+      playing = false; syncUI();
+    });
+  }
+
+  function toggle() {
+    if (curIdx < 0) { playTrack(0); return; }
+    if (audio.paused) {
+      playing = true; syncUI();
+      audio.play().catch(e => { playing = false; syncUI(); });
+    } else {
+      audio.pause(); playing = false; syncUI();
+    }
+  }
+
+  function syncUI() {
+    const icon = playing ? '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4.5" height="16" rx="1"/><rect x="13.5" y="4" width="4.5" height="16" rx="1"/></svg>' : '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg>';
+    document.querySelectorAll('[data-ep-toggle]').forEach(b => b.innerHTML = icon);
+    document.querySelectorAll('.essay-player').forEach(p => {
+      p.classList.toggle('ep-playing', playing);
+    });
+    document.querySelectorAll('[data-ep-disc]').forEach(d => d.classList.toggle('rotating', playing));
+    document.querySelectorAll('.music-item').forEach((it, k) => {
+      it.classList.toggle('playing', k === curIdx && playing);
+      it.querySelector('.mi-play').innerHTML = (k === curIdx && playing) ? '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4.5" height="16" rx="1"/><rect x="13.5" y="4" width="4.5" height="16" rx="1"/></svg>' : '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg>';
+    });
+  }
+
+  // 组件按钮
+  document.querySelectorAll('[data-ep-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => toggle());
+  });
+  document.querySelectorAll('[data-ep-prev]').forEach(btn => {
+    btn.addEventListener('click', () => playTrack(curIdx < 0 ? PLAYLIST.length - 1 : curIdx - 1));
+  });
+  document.querySelectorAll('[data-ep-next]').forEach(btn => {
+    btn.addEventListener('click', () => playTrack(curIdx < 0 ? 0 : curIdx + 1));
+  });
+  // 组件进度条
+  document.querySelectorAll('.ep-progress').forEach(pb => {
+    pb.addEventListener('click', (e) => {
+      if (!audio.duration) return;
+      const r = pb.getBoundingClientRect();
+      audio.currentTime = (e.clientX - r.left) / r.width * audio.duration;
+    });
+  });
+
+  // 音乐栏列表
+  document.querySelectorAll('.music-item').forEach((it, k) => {
+    it.addEventListener('click', () => {
+      if (k === curIdx && !audio.paused) { audio.pause(); playing = false; syncUI(); return; }
+      playTrack(k);
+    });
+  });
+
+  // audio 事件
+  audio.addEventListener('timeupdate', () => {
+    if (!audio.duration) return;
+    const pct = (audio.currentTime / audio.duration * 100) + '%';
+    document.querySelectorAll('[data-ep-fill]').forEach(el => el.style.width = pct);
+    const t = fmt(audio.currentTime) + ' / ' + (curIdx >= 0 ? PLAYLIST[curIdx].dur : '0:00');
+    document.querySelectorAll('[data-ep-time]').forEach(el => el.textContent = t);
+  });
+  audio.addEventListener('ended', () => {
+    playTrack(curIdx + 1);
+  });
+  audio.addEventListener('error', () => {
+    playing = false; syncUI();
+  });
+
+</script>
+</body>
+</html>
