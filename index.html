@@ -287,8 +287,12 @@
   .search-row input:focus { border-color: var(--brand); }
   .search-btn {
     background: var(--brand); color: #fff; border: none; border-radius: 8px;
-    padding: 0.45rem 1.1rem; font-size: 0.88rem; cursor: pointer; font-family: inherit;
+    width: 38px; height: 38px; cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity .15s;
   }
+  .search-btn svg { width: 17px; height: 17px; }
+  .search-btn:hover { opacity: 0.9; }
   .reco-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
   .reco-card { cursor: pointer; }
   .reco-card img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); }
@@ -485,7 +489,7 @@
       <h1>为了不可计算的<em>未来</em></h1>
       <div class="date-line">2026-08-09</div>
 
-      <div class="essay-player" data-player>
+      <div class="essay-player" data-player data-plist="all">
         <div class="ep-cover" data-ep-disc>
           <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
         </div>
@@ -578,7 +582,7 @@
       <div class="sub">—— 写给每一个淋过雨、等过晴天的人</div>
       <div class="date-line">2026-08-09</div>
 
-      <div class="essay-player" data-player>
+      <div class="essay-player" data-player data-plist="all">
         <div class="ep-cover" data-ep-disc>
           <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
         </div>
@@ -654,7 +658,7 @@
       <div class="sub">—— 记一只不服从设置的猫</div>
       <div class="date-line">2026-08-09</div>
 
-      <div class="essay-player" data-player>
+      <div class="essay-player" data-player data-plist="all">
         <div class="ep-cover" data-ep-disc>
           <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
         </div>
@@ -747,7 +751,7 @@
       <div class="sub">—— 记一年里唯一被迫停下来的一天</div>
       <div class="date-line">2026-08-09</div>
 
-      <div class="essay-player" data-player>
+      <div class="essay-player" data-player data-plist="all">
         <div class="ep-cover" data-ep-disc>
           <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
         </div>
@@ -805,11 +809,11 @@
   </section>
                 <section class="essay" id="music">
     <div class="essay-inner">
-      <div class="kicker">配乐 · 五首</div>
+      <div class="kicker">曲库 · 廿一首</div>
       <h1>写字的<em>时候</em></h1>
-      <div class="date-line">挑了几首安静的</div>
+      <div class="date-line">四篇散文的配乐，都在里面</div>
 
-      <div class="essay-player" data-player>
+      <div class="essay-player" data-player data-plist="all">
         <div class="ep-cover" data-ep-disc>
           <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
         </div>
@@ -854,7 +858,9 @@
       <div class="mtab-panel" id="panel-search" style="display:none">
         <div class="search-row">
           <input type="text" id="searchInput" placeholder="搜歌名 / 歌手" autocomplete="off">
-          <button id="searchBtn" class="search-btn">搜</button>
+          <button id="searchBtn" class="search-btn" aria-label="搜索">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
         </div>
         <div class="rank-list" id="searchList"></div>
       </div>
@@ -904,7 +910,7 @@
       <h1>这个<em>散文集</em></h1>
       <div class="date-line">阿斯温月</div>
 
-      <div class="essay-player" data-player>
+      <div class="essay-player" data-player data-plist="all">
         <div class="ep-cover" data-ep-disc>
           <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
         </div>
@@ -991,31 +997,34 @@
   // ===== 全局播放器：网易云风组件 + 音乐栏列表 =====
   const PLAYLIST = [
     { src: 'music/yunduan.mp3', cover: 'images/music/yunduan.jpg', title: '云端少年', artist: '代鑫 / 戴尔基', album: '众乐纪肆·光怪陆离', dur: '4:40' },
-    { src: 'music/lixiang.mp3', cover: 'images/music/lixiang.jpg', title: '理想三旬', artist: '陈鸿宇', album: '浓烟下的诗歌电台', dur: '3:30' },
-    { src: 'music/meihao.mp3', cover: 'images/music/meihao.jpg', title: '美好事物', artist: '房东的猫', album: '云烟成雨', dur: '3:18' },
-    { src: 'music/tuzhong.mp3', cover: 'images/music/tuzhong.jpg', title: '途中', artist: '陈鸿宇', album: '浓烟下的诗歌电台', dur: '4:19' },
-    { src: 'music/yirunian.mp3', cover: 'images/music/yirunian.jpg', title: '一如年少模样', artist: '陈鸿宇', album: '一如年少模样', dur: '4:22' },
-    { src: 'music/zaochun.mp3', cover: 'images/music/zaochun.jpg', title: '早春的树', artist: '陈鸿宇', album: '浓烟下的诗歌电台', dur: '3:56' },
-    { src: 'music/xingge.mp3', cover: 'images/music/xingge.jpg', title: '行歌', artist: '陈鸿宇', album: '一如年少模样', dur: '4:47' },
-    { src: 'music/laixin.mp3', cover: 'images/music/laixin.jpg', title: '来信', artist: '陈鸿宇', album: '浓烟下的诗歌电台', dur: '4:21' },
-    { src: 'music/eerguna.mp3', cover: 'images/music/eerguna.jpg', title: '额尔古纳', artist: '陈鸿宇', album: '一如年少模样', dur: '4:05' },
-    { src: 'music/nihong.mp3', cover: 'images/music/nihong.jpg', title: '霓虹深处', artist: '陈鸿宇', album: '浓烟下的诗歌电台', dur: '4:56' },
-    { src: 'music/yuhao.mp3', cover: 'images/music/yuhao.jpg', title: '雨好', artist: '陈鸿宇', album: '一如年少模样', dur: '4:15' },
-    { src: 'music/chuanzi.mp3', cover: 'images/music/chuanzi.jpg', title: '船子', artist: '陈鸿宇', album: '民谣地图·拾众而歌', dur: '3:36' },
-    { src: 'music/zuori.mp3', cover: 'images/music/zuori.jpg', title: '昨日的你', artist: '陈鸿宇', album: '与荒野', dur: '4:20' },
-    { src: 'music/qiu_niang.mp3', cover: 'images/music/qiu_niang.jpg', title: '秋酿', artist: '房东的猫', album: '房东的猫', dur: '3:46' },
-    { src: 'music/baijing.mp3', cover: 'images/music/baijing.jpg', title: '白鲸', artist: '房东的猫', album: '柔软', dur: '4:10' },
-    { src: 'music/ruchang.mp3', cover: 'images/music/ruchang.jpg', title: '如常', artist: '房东的猫', album: '柔软', dur: '5:49' },
-    { src: 'music/bugui.mp3', cover: 'images/music/bugui.jpg', title: '不知归期的故人', artist: '房东的猫', album: '房东的猫', dur: '4:15' },
-    { src: 'music/duantan.mp3', cover: 'images/music/duantan.jpg', title: '短叹', artist: '房东的猫 / 梁晓雪', album: '房东的猫', dur: '3:59' },
-    { src: 'music/xinchang.mp3', cover: 'images/music/xinchang.jpg', title: '心想唱歌就唱歌', artist: '程璧', album: '心想唱歌就唱歌', dur: '3:09' },
-    { src: 'music/chunfen.mp3', cover: 'images/music/chunfen.jpg', title: '春分的夜', artist: '程璧', album: '我想和你虚度时光', dur: '4:46' },
-    { src: 'music/siguxiang.mp3', cover: 'images/music/siguxiang.jpg', title: '思故乡', artist: '程璧', album: '晴日共剪窗', dur: '3:33' },
+    { src: null, id: 28815250, cover: 'https://p1.music.126.net/W_5XiCv3rGS1-J7EXpHSCQ==/18885211718782327.jpg', title: '平凡之路', artist: '朴树', album: '猎户星座', dur: '5:02' },
+    { src: null, id: 28996922, cover: 'https://p2.music.126.net/xANk1-adqsx10DpRLJOBzg==/109951167411817871.jpg', title: '那些花儿', artist: '朴树', album: '我去2000年', dur: '4:55' },
+    { src: null, id: 436514312, cover: 'https://p1.music.126.net/34YW1QtKxJ_3YnX9ZzKhzw==/2946691234868155.jpg', title: '成都', artist: '赵雷', album: '成都', dur: '5:28' },
+    { src: null, id: 202373, cover: 'https://p2.music.126.net/btBocL7KKvl0sRZY62_BIA==/109951169213244790.jpg', title: '南方姑娘', artist: '赵雷', album: '赵小雷', dur: '5:32' },
+    { src: null, id: 27646198, cover: 'https://p2.music.126.net/Ss7mkl2EK3Xl7Vv6iz-XAg==/109951172945820235.jpg', title: '董小姐', artist: '宋冬野', album: '安和桥北', dur: '5:10' },
+    { src: null, id: 26598946, cover: 'https://p2.music.126.net/0tEzUaiiWOb3gOgQaYKATg==/109951163023734669.jpg', title: '山丘', artist: '李宗盛', album: '山丘', dur: '6:45' },
+    { src: null, id: 66842, cover: 'https://p1.music.126.net/wECqsELfPFdVNLpW0QWhmA==/109951171836564936.jpg', title: '十年', artist: '陈奕迅', album: '黑白灰', dur: '3:25' },
+    { src: null, id: 66282, cover: 'https://p1.music.126.net/W9imJx0w_JeCGGs43dfjFg==/109951171529987110.jpg', title: '浮夸', artist: '陈奕迅', album: 'U87', dur: '4:43' },
+    { src: null, id: 299936, cover: 'https://p2.music.126.net/W6MDlem6_FsymbnxKc_BKQ==/109951171530948990.jpg', title: '红豆', artist: '王菲', album: '唱游', dur: '4:16' },
+    { src: null, id: 298838, cover: 'https://p1.music.126.net/ZPnVAoCKS9VbUZkOzrJHDw==/19157890602644480.jpg', title: '传奇', artist: '王菲', album: '传奇', dur: '4:56' },
+    { src: null, id: 1357375695, cover: 'https://p1.music.126.net/q6cm6Pk70YArijk1_QDoEg==/109951163984013003.jpg', title: '海阔天空', artist: 'Beyond', album: '华纳廿三周年纪念精选系列 - B﻿eyond', dur: '3:59' },
+    { src: null, id: 346576, cover: 'https://p2.music.126.net/JOJvZc_7SqQjKf8TktQ_bw==/29686813951246.jpg', title: '光辉岁月', artist: 'Beyond', album: '光辉岁月十五年', dur: '4:58' },
+    { src: null, id: 254574, cover: 'https://p2.music.126.net/eBF7bHnJYBUfOFrJ_7SUfw==/109951163351825356.jpg', title: '后来', artist: '刘若英', album: '我等你', dur: '5:41' },
+    { src: null, id: 385781, cover: 'https://p1.music.126.net/l0vGEnowGfj6DgFSGojyfQ==/109951168163397768.jpg', title: '突然好想你', artist: '五月天', album: '后青春期的诗', dur: '4:25' },
+    { src: null, id: 386538, cover: 'https://p2.music.126.net/-Md-YgTBiVsbpmVXIZz00w==/109951170702056876.jpg', title: '温柔', artist: '五月天', album: '我们是五月天', dur: '4:29' },
+    { src: null, id: 187134, cover: 'https://p1.music.126.net/EAG_4Ee85beWnAzyLetdUA==/109951165566710305.jpg', title: '朋友', artist: '周华健', album: '朋友', dur: '5:12' },
+    { src: null, id: 1847408145, cover: 'https://p1.music.126.net/LzkzNYJ7zzb9b3ofOac2Qg==/109951168146310081.jpg', title: '月亮代表我的心', artist: '邓丽君', album: '90年代粵語情歌集', dur: '3:28' },
+    { src: null, id: 109530, cover: 'https://p2.music.126.net/GR6OSPO_tYmk_U9g0OhR_A==/109951172346449536.jpg', title: '童年', artist: '罗大佑', album: '之乎者也', dur: '3:54' },
+    { src: null, id: 1298435663, cover: 'https://p1.music.126.net/lYn5neyt8NxLtEFzM29hQg==/109951168108537623.jpg', title: '同桌的你', artist: '老狼', album: '一人一首成名曲（10）', dur: '3:21' },
+    { src: null, id: 168091, cover: 'https://p1.music.126.net/C6txAWMGlVmAcAD37RVutQ==/122045790684028.jpg', title: '蓝莲花', artist: '许巍', album: '时光.漫步', dur: '4:30' },
   ];
   const audio = new Audio();
   audio.preload = 'none';
   let curIdx = -1;
   let playing = false;
+
+  // 初始渲染:每组件显示自己歌单第一首
+  document.querySelectorAll('.essay-player').forEach(comp => renderComp(comp));
 
   const fmt = (s) => {
     if (!isFinite(s)) return '0:00';
@@ -1023,16 +1032,29 @@
     return m + ':' + String(ss).padStart(2, '0');
   };
 
+  function plistOf(comp) {
+    const raw = comp ? comp.getAttribute('data-plist') : 'all';
+    if (!raw || raw === 'all') return PLAYLIST.map((_, i) => i);
+    return raw.split(',').map(Number).filter(n => n >= 0 && n < PLAYLIST.length);
+  }
+
+  // 组件显示:播放中歌曲属于该组件歌单则显示它,否则显示歌单第一首
+  function renderComp(comp) {
+    const pl = plistOf(comp);
+    const t = (curIdx >= 0 && pl.includes(curIdx)) ? PLAYLIST[curIdx] : PLAYLIST[pl[0]];
+    comp.querySelector('[data-ep-cover]').src = t.cover;
+    comp.querySelector('[data-ep-title]').textContent = t.title;
+    comp.querySelector('[data-ep-artist]').textContent = t.artist;
+    comp.querySelector('[data-ep-album]').textContent = t.album;
+    comp.querySelector('[data-ep-time]').textContent = '0:00 / ' + t.dur;
+  }
+
   function loadTrack(i) {
     curIdx = (i + PLAYLIST.length) % PLAYLIST.length;
     const t = PLAYLIST[curIdx];
     audio.src = t.src;
     // 同步所有组件
-    document.querySelectorAll('[data-ep-cover]').forEach(img => img.src = t.cover);
-    document.querySelectorAll('[data-ep-title]').forEach(el => el.textContent = t.title);
-    document.querySelectorAll('[data-ep-artist]').forEach(el => el.textContent = t.artist);
-    document.querySelectorAll('[data-ep-time]').forEach(el => el.textContent = '0:00 / ' + t.dur);
-    document.querySelectorAll('[data-ep-album]').forEach(el => el.textContent = t.album);
+    document.querySelectorAll('.essay-player').forEach(comp => renderComp(comp));
     document.querySelectorAll('[data-ep-fill]').forEach(el => el.style.width = '0%');
     // 同步音乐栏列表
     document.querySelectorAll('.music-item').forEach((it, k) => {
@@ -1041,17 +1063,31 @@
     });
   }
 
-  function playTrack(i) {
+  async function playTrack(i) {
     loadTrack(i);
+    const t = PLAYLIST[curIdx];
     playing = true; syncUI();
-    audio.play().catch(e => {
-      console.error('play fail', e);
-      playing = false; syncUI();
-    });
+    if (t.src) {
+      audio.src = t.src;
+      audio.play().catch(e => { playing = false; syncUI(); });
+    } else {
+      try {
+        const d = await api('/api/play?id=' + t.id);
+        if (d.url) {
+          audio.src = d.url;
+          audio.play().catch(e => { playing = false; syncUI(); });
+        } else {
+          playing = false; syncUI();
+        }
+      } catch (e) {
+        playing = false; syncUI();
+      }
+    }
   }
 
-  function toggle() {
-    if (curIdx < 0) { playTrack(0); return; }
+  function toggle(comp) {
+    if (curIdx < 0) { playTrack(plistOf(comp)[0]); return; }
+    if (!plistOf(comp).includes(curIdx)) { playTrack(plistOf(comp)[0]); return; }
     if (audio.paused) {
       playing = true; syncUI();
       audio.play().catch(e => { playing = false; syncUI(); });
@@ -1075,13 +1111,19 @@
 
   // 组件按钮
   document.querySelectorAll('[data-ep-toggle]').forEach(btn => {
-    btn.addEventListener('click', () => toggle());
+    btn.addEventListener('click', () => toggle(btn.closest('.essay-player')));
   });
+  function stepInGroup(comp, dir) {
+    const pl = plistOf(comp);
+    let idx = pl.indexOf(curIdx);
+    if (idx === -1) { playTrack(pl[0]); return; }
+    playTrack(pl[(idx + dir + pl.length) % pl.length]);
+  }
   document.querySelectorAll('[data-ep-prev]').forEach(btn => {
-    btn.addEventListener('click', () => playTrack(curIdx < 0 ? PLAYLIST.length - 1 : curIdx - 1));
+    btn.addEventListener('click', () => stepInGroup(btn.closest('.essay-player'), -1));
   });
   document.querySelectorAll('[data-ep-next]').forEach(btn => {
-    btn.addEventListener('click', () => playTrack(curIdx < 0 ? 0 : curIdx + 1));
+    btn.addEventListener('click', () => stepInGroup(btn.closest('.essay-player'), 1));
   });
   // 组件进度条
   document.querySelectorAll('.ep-progress').forEach(pb => {

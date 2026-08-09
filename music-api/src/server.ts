@@ -67,8 +67,9 @@ app.get('/api/rank', async (c) => {
   const rank = RANKS[type];
   if (!rank) return c.json({ error: 'unknown rank type' }, 400);
   try {
-    const data = await neteaseJson(`/api/v6/playlist/detail?id=${rank.id}`);
-    const tracks = (data?.playlist?.tracks || []).map((t: any, i: number) => ({
+    const limit = Math.min(Number(c.req.query('limit')) || 10, 50);
+    const data = await NCM.playlist_track_all({ id: rank.id, limit, offset: 0 });
+    const tracks = (data.body?.songs || data.body?.playlist?.tracks || []).map((t: any, i: number) => ({
       rank: i + 1,
       id: t.id,
       title: t.name,
@@ -126,7 +127,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 
 const COOKIE_FILE = '/tmp/ncm-cookie.txt';
 let musicCookie: string | null = existsSync(COOKIE_FILE) ? readFileSync(COOKIE_FILE, 'utf8') : null;
-let cookieExpire = 0;
+let cookieExpire = musicCookie ? Date.now() + 7 * 24 * 3600 * 1000 : 0;
 
 app.get('/api/login/qr', async (c) => {
   try {
