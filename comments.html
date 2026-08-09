@@ -143,9 +143,9 @@
       const d = await r.json();
       if (d.ok) {
         inputEl.value = '';
-        tipEl.textContent = '写下了';
-        setTimeout(() => { tipEl.textContent = ''; }, 2000);
-        load();
+        tipEl.textContent = d.status === 'approved' ? '写下了' : '已提交，审核通过后展示';
+        setTimeout(() => { tipEl.textContent = ''; }, 2500);
+        if (d.status === 'approved') load();
       } else {
         tipEl.textContent = d.error || '失败';
       }

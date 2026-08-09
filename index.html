@@ -252,9 +252,10 @@
     display: inline-flex; align-items: center; justify-content: center;
     width: 30px; height: 30px; margin-left: 0.6rem;
     border: 1px solid var(--line); border-radius: 50%;
-    background: none; color: var(--brand); font-size: 0.95rem;
-    cursor: pointer; transition: all .15s; vertical-align: middle; line-height: 1;
+    background: none; color: var(--brand);
+    cursor: pointer; transition: all .15s; vertical-align: middle; line-height: 0;
   }
+  .share-btn svg { width: 15px; height: 15px; }
   .share-btn:hover { background: var(--brand); color: #fff; border-color: var(--brand); }
   .share-modal {
     display: none; position: fixed; inset: 0; z-index: 100;
@@ -495,7 +496,7 @@
     <span class="item-text">写字的时光</span>
   </a>
   <a class="item" href="/essays/comments.html" data-external>
-    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     <span class="item-text">留言</span>
   </a>
   <a class="item" data-target="about" href="javascript:void(0)">
@@ -547,7 +548,9 @@
   </g>
 </svg></div>
       <h1>为了不可计算的<em>未来</em></h1>
-      <div class="date-line">2026-08-09</div>      <button class="share-btn" data-share title="分享">↗</button>
+      <div class="date-line">2026-08-09</div>      <button class="share-btn" data-share title="分享">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
 
 
       <div class="essay-player" data-player data-plist="all">
@@ -643,7 +646,9 @@
 </svg></div>
       <h1>雨<em>知道</em></h1>
       <div class="sub">—— 写给每一个淋过雨、等过晴天的人</div>
-      <div class="date-line">2026-08-09</div>      <button class="share-btn" data-share title="分享">↗</button>
+      <div class="date-line">2026-08-09</div>      <button class="share-btn" data-share title="分享">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
 
 
       <div class="essay-player" data-player data-plist="all">
@@ -722,7 +727,9 @@
 </svg></div>
       <h1>我爸捡了个<em>猫</em></h1>
       <div class="sub">—— 记一只不服从设置的猫</div>
-      <div class="date-line">2026-08-09</div>      <button class="share-btn" data-share title="分享">↗</button>
+      <div class="date-line">2026-08-09</div>      <button class="share-btn" data-share title="分享">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
 
 
       <div class="essay-player" data-player data-plist="all">
@@ -818,7 +825,9 @@
 </svg></div>
       <h1>台风<em>来了</em></h1>
       <div class="sub">—— 记一年里唯一被迫停下来的一天</div>
-      <div class="date-line">2026-08-09</div>      <button class="share-btn" data-share title="分享">↗</button>
+      <div class="date-line">2026-08-09</div>      <button class="share-btn" data-share title="分享">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
 
 
       <div class="essay-player" data-player data-plist="all">
@@ -980,7 +989,9 @@
 </svg></div>
       <div class="kicker">关于 · 良质</div>
       <h1>这个<em>散文集</em></h1>
-      <div class="date-line">阿斯温月</div>      <button class="share-btn" data-share title="分享">↗</button>
+      <div class="date-line">阿斯温月</div>      <button class="share-btn" data-share title="分享">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
 
 
       <div class="essay-player" data-player data-plist="all">
@@ -1374,6 +1385,13 @@
 
 
   // ===== 分享卡片 =====
+  const SUMMARIES = {
+    e1: '一下班就下雨。群里全是加一。好像雨专门挑下班时间下。我躲雨躲了半天，出来才发现，雨早停了，屋檐下的人早走光了。',
+    e2: '我爸在楼下捡了只猫。从此家里多了一个不交房租的住户。它白天睡觉，晚上巡逻，把家里所有解释不通的事都归了类。',
+    e3: '台风来了，全市放假。我爸去江边看水。我在屋里贴胶带。一个躲，一个去。台风走了，胶带还在。',
+    e4: '故事得从四十亿年前讲起。那时候地球上还没有眼睛，没有耳朵，没有会做梦的东西。后来人类造出了另一种代码，也给它讲起了故事。',
+    about: '这些散文没什么用。不能赚钱，不能升职，不能帮你解决任何一个实际问题。可写它们的时候，人是完整的。',
+  };
   const QUOTES = {
     e1: '为了不可计算的未来。拆开看，就是先把今天过完。',
     e2: '雨没惹谁，它只是落。',
@@ -1389,7 +1407,7 @@
     const W = 900, H = 1350;
     ctx.fillStyle = '#faf6ef';
     ctx.fillRect(0, 0, W, H);
-    // 顶部细线装饰
+    // 顶部细线
     ctx.strokeStyle = '#d95c41';
     ctx.lineWidth = 3;
     ctx.beginPath(); ctx.moveTo(80, 90); ctx.lineTo(820, 90); ctx.stroke();
@@ -1402,29 +1420,42 @@
     ctx.fillStyle = '#2b2620';
     ctx.font = 'bold 56px "Noto Serif SC", serif';
     ctx.fillText(h1, 80, 250);
+    // 摘要(文章简略内容)
+    const summ = SUMMARIES[section.id] || '';
+    ctx.fillStyle = '#5a5248';
+    ctx.font = '30px "Noto Serif SC", serif';
+    const sLines = wrapText(ctx, summ, 730);
+    sLines.slice(0, 4).forEach((ln, i) => ctx.fillText(ln, 80, 360 + i * 50));
     // 金句
     const q = QUOTES[section.id] || '';
-    ctx.fillStyle = '#5a5248';
-    ctx.font = '32px "Noto Serif SC", serif';
-    const lines = wrapText(ctx, q, 740);
-    lines.forEach((ln, i) => ctx.fillText(ln, 80, 340 + i * 52));
+    ctx.fillStyle = '#d95c41';
+    ctx.font = '31px "Noto Serif SC", serif';
+    const qY = 360 + Math.min(sLines.length, 4) * 50 + 46;
+    const qLines = wrapText(ctx, q, 730);
+    qLines.slice(0, 2).forEach((ln, i) => ctx.fillText(ln, 80, qY + i * 48));
     // 分隔线
     ctx.strokeStyle = '#d8cfc2';
     ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.moveTo(80, 760); ctx.lineTo(820, 760); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(80, 860); ctx.lineTo(820, 860); ctx.stroke();
     // 底部信息
     ctx.fillStyle = '#8a8178';
     ctx.font = '24px serif';
-    ctx.fillText('nextai.show/essays', 80, 980);
-    ctx.fillText('四篇散文 · 始于一个闷热的夏夜', 80, 1020);
-    // 二维码
-    const qrCanvas = document.createElement('canvas');
-    new QRCode(qrCanvas, { text: location.origin + '/essays/', width: 160, height: 160 });
-    ctx.drawImage(qrCanvas, 80, 1080, 160, 160);
-    // 二维码旁小字
+    ctx.fillText('nextai.show/essays', 80, 990);
+    ctx.fillText('四篇散文 · 始于一个闷热的夏夜', 80, 1030);
+    // 二维码:后端 node-qrcode 生成(前端 qrcodejs 不可靠)
+    fetch('/music-api/api/qr?text=' + encodeURIComponent(location.origin + '/essays/'))
+      .then(r => r.blob())
+      .then(blob => {
+        const qrImg = new Image();
+        qrImg.onload = () => {
+          ctx.drawImage(qrImg, 80, 1100, 170, 170);
+          URL.revokeObjectURL(qrImg.src);
+        };
+        qrImg.src = URL.createObjectURL(blob);
+      });
     ctx.fillStyle = '#8a8178';
-    ctx.font = '20px serif';
-    ctx.fillText('扫码阅读', 270, 1160);
+    ctx.font = '22px serif';
+    ctx.fillText('扫码阅读', 280, 1190);
   }
 
   function wrapText(ctx, text, maxWidth) {

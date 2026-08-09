@@ -217,6 +217,64 @@ app.get('/api/play', async (c) => {
 
 // ===== 留言板(散文站) =====
 import { mkdirSync } from 'node:fs';
+import { readFileSync as _rfs } from 'node:fs';
+
+// 关键词拦截(先行,零成本):命中直接拒,漏网的交给 AI
+const BLOCK_KEYWORDS = [
+  '加微信', '加vx', '加我微信', 'vx:', 'weixin', 'qq群', '加qq', 'q群',
+  '代购', '兼职', '刷单', '返利', '贷款', '理财', '博彩', '彩票', '赌博',
+  '股票推荐', '荐股', '买茶叶', '卖茶叶', '烟酒', '进群', '扫码加', '招商',
+  '傻逼', '煞笔', '妈逼', '他妈', '操你', '去死', '狗日', '废物', '贱人',
+  '白痴', '脑残', 'nmsl', 'sb', 'cnm', '日你',
+  '约炮', '一夜情', '援交', '卖淫', '嫖', '色情', '黄片', '三级片', '裸聊', '裸照',
+  '福利姬', '成人片', '小黄片', '骚货', '婊子', '母狗', '包养', '出台', '莞式',
+  '足交', '口交', '鸡巴', '奶子', '淫荡', 'av资源', '种子资源',
+  '习近平', '习大大', '共产党', '六四', '天安门事件', '法轮', '台独', '藏独', '疆独', '港独',
+  'http://', 'https://', 'www.', '.com', '.cn', '.top', '加v',
+];
+function keywordBlock(content: string): string | null {
+  const lower = content.toLowerCase();
+  return BLOCK_KEYWORDS.find((k) => lower.includes(k)) || null;
+}
+
+// DeepSeek 轻量审核(最快速模型 + 不思考)
+function deepseekKey(): string {
+  if (process.env.DEEPSEEK_API_KEY) return process.env.DEEPSEEK_API_KEY;
+  try {
+    const env = _rfs('/home/ubuntu/.hermes/.env', 'utf8');
+    const m = env.match(/^DEEPSEEK_API_KEY\s*=\s*(.+)$/m);
+    return m ? m[1].trim().replace(/^['"]|['"]$/g, '') : '';
+  } catch { return ''; }
+}
+
+async function aiReview(content: string): Promise<boolean | null> {
+  const key = deepseekKey();
+  if (!key) return null;
+  try {
+    const resp = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
+      body: JSON.stringify({
+        model: 'deepseek-v4-flash',
+        max_tokens: 128,
+        reasoning_effort: 'low',
+        messages: [
+          { role: 'system', content: '你是内容审核员。判断留言是否违规:政治敏感、色情低俗、广告营销、辱骂攻击、垃圾信息、恶意链接。只输出 {"ok":true} 或 {"ok":false}。' },
+          { role: 'user', content: String(content).slice(0, 200) },
+        ],
+      }),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!resp.ok) return null;
+    const d: any = await resp.json();
+    const text: string = d.choices?.[0]?.message?.content || '';
+    if (text.includes('"ok":true')) return true;
+    if (text.includes('"ok":false')) return false;
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 const COMMENTS_FILE = '/var/www/essays/data/comments.json';
 const postLimits = new Map<string, number>(); // ip -> lastTs
@@ -235,7 +293,9 @@ function saveComments(list: any[]) {
 
 app.get('/api/comments', (c) => {
   const essay = c.req.query('essay') || '';
-  const list = loadComments().filter((x) => !essay || x.essay === essay);
+  const list = loadComments().filter(
+    (x) => x.status === 'approved' && (!essay || x.essay === essay)
+  );
   return c.json({ comments: list.slice(-50).reverse() });
 });
 
@@ -253,10 +313,37 @@ app.post('/api/comments', async (c) => {
   const content = String(body.content || '').slice(0, 300);
   if (!essay || !content.trim()) return c.json({ error: '内容不能为空' }, 400);
   const list = loadComments();
-  list.push({ essay, name: name.trim() || '匿名', content: content.trim(), time: now });
+  const rec: any = { essay, name: name.trim() || '匿名', content: content.trim(), time: now };
+  // 混合审核:关键词先行(零成本),AI 兜底
+  const hit = keywordBlock(rec.content);
+  let verdict: boolean | null;
+  if (hit) {
+    verdict = false;
+  } else {
+    verdict = await aiReview(rec.content);
+  }
+  rec.status = verdict === true ? 'approved' : (verdict === false ? 'rejected' : 'pending');
+  list.push(rec);
   saveComments(list);
   postLimits.set(ip, now);
-  return c.json({ ok: true });
+  return c.json({ ok: true, status: rec.status });
+});
+
+// 二维码生成(分享卡片用,node qrcode 库比前端库稳)
+const QR = require('qrcode');
+app.get('/api/qr', async (c) => {
+  const text = c.req.query('text') || 'https://nextai.show/essays/';
+  const size = Math.min(Number(c.req.query('size')) || 170, 600);
+  try {
+    const dataUrl = await QR.toDataURL(String(text).slice(0, 200), { width: size, margin: 1 });
+    const b64 = dataUrl.split(',')[1];
+    return c.newResponse(Buffer.from(b64, 'base64'), 200, {
+      'Content-Type': 'image/png',
+      'Cache-Control': 'public, max-age=86400',
+    });
+  } catch (e: any) {
+    return c.json({ error: String(e?.message || e) }, 500);
+  }
 });
 
 const PORT = Number(process.env.PORT || 8799);
