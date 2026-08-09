@@ -247,7 +247,55 @@
   @media (max-width: 480px) {
     .essay-player { max-width: none; }
     .ep-cover { width: 52px; height: 52px; }
-  }  /* 音乐列表 */
+  }  /* 音乐 tab */
+  .music-tabs { display: flex; gap: 0.4rem; margin: 0.6rem 0 1.2rem; }
+  .mtab {
+    background: none; border: 1px solid var(--line); border-radius: 999px;
+    color: var(--muted); font-size: 0.85rem; padding: 0.3rem 0.9rem;
+    cursor: pointer; transition: all .15s; font-family: inherit;
+  }
+  .mtab:hover { color: var(--brand); border-color: var(--brand); }
+  .mtab.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .rank-tabs { display: flex; gap: 0.4rem; margin-bottom: 0.8rem; }
+  .rtab {
+    background: none; border: 1px solid var(--line); border-radius: 8px;
+    color: var(--muted); font-size: 0.82rem; padding: 0.25rem 0.8rem;
+    cursor: pointer; transition: all .15s; font-family: inherit;
+  }
+  .rtab.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .rank-list { display: flex; flex-direction: column; }
+  .rank-item {
+    display: flex; align-items: center; gap: 0.8rem;
+    padding: 0.55rem 0.2rem; border-bottom: 1px solid var(--line);
+    cursor: pointer; transition: background .12s;
+  }
+  .rank-item:hover { background: color-mix(in srgb, var(--bg) 97%, var(--brand)); }
+  .rank-item .rk-no { width: 1.6rem; text-align: center; color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+  .rank-item .rk-no.top { color: var(--brand); font-weight: 600; }
+  .rank-item img { width: 42px; height: 42px; border-radius: 8px; object-fit: cover; border: 1px solid var(--line); }
+  .rank-item .rk-info { flex: 1; min-width: 0; }
+  .rank-item .rk-title { display: block; font-size: 0.92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rank-item .rk-artist { display: block; font-size: 0.78rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rank-item .rk-play { color: var(--brand); font-size: 0.9rem; }
+  .rank-item.playing .rk-title { color: var(--brand); }
+  .search-row { display: flex; gap: 0.5rem; margin-bottom: 0.9rem; }
+  .search-row input {
+    flex: 1; background: none; border: 1px solid var(--line); border-radius: 8px;
+    padding: 0.45rem 0.8rem; color: var(--text); font-size: 0.92rem; font-family: inherit;
+    outline: none; transition: border-color .15s;
+  }
+  .search-row input:focus { border-color: var(--brand); }
+  .search-btn {
+    background: var(--brand); color: #fff; border: none; border-radius: 8px;
+    padding: 0.45rem 1.1rem; font-size: 0.88rem; cursor: pointer; font-family: inherit;
+  }
+  .reco-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+  .reco-card { cursor: pointer; }
+  .reco-card img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); }
+  .reco-card .rc-name { display: block; font-size: 0.84rem; margin-top: 0.35rem; line-height: 1.35; }
+  .reco-card .rc-count { display: block; font-size: 0.74rem; color: var(--muted); margin-top: 0.1rem; }
+  @media (max-width: 480px) { .reco-grid { grid-template-columns: repeat(2, 1fr); } }
+  /* 音乐列表 */
   .music-list { margin: 1.8rem 0; }
   .music-item {
     display: flex; align-items: center; gap: 0.9rem;
@@ -783,37 +831,36 @@
 
       <p class="lead">写这些字的时候听的歌。不吵，不赶，像下雨的傍晚。</p>
 
-      <div class="music-list" id="musicList">
-        <div class="music-item" data-src="music/yunduan.mp3" data-cover="images/music/yunduan.jpg" data-title="云端少年" data-artist="代鑫 / 戴尔基" data-dur="4:40">
-          <img src="images/music/yunduan.jpg" alt="" loading="lazy">
-          <div class="mi-info"><span class="mi-title">云端少年</span><span class="mi-artist">代鑫 / 戴尔基</span></div>
-          <span class="mi-dur">4:40</span>
-          <button class="mi-play" aria-label="播放"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
+      <div class="music-tabs">
+        <button class="mtab active" data-tab="lib">曲库</button>
+        <button class="mtab" data-tab="rank">排行</button>
+        <button class="mtab" data-tab="search">搜索</button>
+        <button class="mtab" data-tab="reco">推荐</button>
+      </div>
+
+      <div class="mtab-panel" id="panel-lib">
+      <div class="music-list" id="musicList"></div>
+      </div>
+
+      <div class="mtab-panel" id="panel-rank" style="display:none">
+        <div class="rank-tabs">
+          <button class="rtab active" data-rank="hot">热歌榜</button>
+          <button class="rtab" data-rank="new">新歌榜</button>
+          <button class="rtab" data-rank="soar">飙升榜</button>
         </div>
-        <div class="music-item" data-src="music/lixiang.mp3" data-cover="images/music/lixiang.jpg" data-title="理想三旬" data-artist="陈鸿宇" data-dur="3:30">
-          <img src="images/music/lixiang.jpg" alt="" loading="lazy">
-          <div class="mi-info"><span class="mi-title">理想三旬</span><span class="mi-artist">陈鸿宇</span></div>
-          <span class="mi-dur">3:30</span>
-          <button class="mi-play" aria-label="播放"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
+        <div class="rank-list" id="rankList"><p class="music-note">加载中…</p></div>
+      </div>
+
+      <div class="mtab-panel" id="panel-search" style="display:none">
+        <div class="search-row">
+          <input type="text" id="searchInput" placeholder="搜歌名 / 歌手" autocomplete="off">
+          <button id="searchBtn" class="search-btn">搜</button>
         </div>
-        <div class="music-item" data-src="music/meihao.mp3" data-cover="images/music/meihao.jpg" data-title="美好事物" data-artist="房东的猫" data-dur="4:00">
-          <img src="images/music/meihao.jpg" alt="" loading="lazy">
-          <div class="mi-info"><span class="mi-title">美好事物</span><span class="mi-artist">房东的猫</span></div>
-          <span class="mi-dur">4:00</span>
-          <button class="mi-play" aria-label="播放"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
-        </div>
-        <div class="music-item" data-src="music/tuzhong.mp3" data-cover="images/music/tuzhong.jpg" data-title="途中" data-artist="陈鸿宇" data-dur="3:50">
-          <img src="images/music/tuzhong.jpg" alt="" loading="lazy">
-          <div class="mi-info"><span class="mi-title">途中</span><span class="mi-artist">陈鸿宇</span></div>
-          <span class="mi-dur">3:50</span>
-          <button class="mi-play" aria-label="播放"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
-        </div>
-        <div class="music-item" data-src="music/yirunian.mp3" data-cover="images/music/yirunian.jpg" data-title="一如年少模样" data-artist="陈鸿宇" data-dur="4:10">
-          <img src="images/music/yirunian.jpg" alt="" loading="lazy">
-          <div class="mi-info"><span class="mi-title">一如年少模样</span><span class="mi-artist">陈鸿宇</span></div>
-          <span class="mi-dur">4:10</span>
-          <button class="mi-play" aria-label="播放"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
-        </div>
+        <div class="rank-list" id="searchList"></div>
+      </div>
+
+      <div class="mtab-panel" id="panel-reco" style="display:none">
+        <div class="reco-grid" id="recoGrid"><p class="music-note">加载中…</p></div>
       </div>
 
       <p class="music-note">歌从网易云来。想听完整的，去那边搜歌名。</p>
@@ -945,9 +992,25 @@
   const PLAYLIST = [
     { src: 'music/yunduan.mp3', cover: 'images/music/yunduan.jpg', title: '云端少年', artist: '代鑫 / 戴尔基', album: '众乐纪肆·光怪陆离', dur: '4:40' },
     { src: 'music/lixiang.mp3', cover: 'images/music/lixiang.jpg', title: '理想三旬', artist: '陈鸿宇', album: '浓烟下的诗歌电台', dur: '3:30' },
-    { src: 'music/meihao.mp3', cover: 'images/music/meihao.jpg', title: '美好事物', artist: '房东的猫', album: '云烟成雨', dur: '4:00' },
-    { src: 'music/tuzhong.mp3', cover: 'images/music/tuzhong.jpg', title: '途中', artist: '陈鸿宇', album: '浓烟下的诗歌电台', dur: '3:50' },
-    { src: 'music/yirunian.mp3', cover: 'images/music/yirunian.jpg', title: '一如年少模样', artist: '陈鸿宇', album: '一如年少模样', dur: '4:10' },
+    { src: 'music/meihao.mp3', cover: 'images/music/meihao.jpg', title: '美好事物', artist: '房东的猫', album: '云烟成雨', dur: '3:18' },
+    { src: 'music/tuzhong.mp3', cover: 'images/music/tuzhong.jpg', title: '途中', artist: '陈鸿宇', album: '浓烟下的诗歌电台', dur: '4:19' },
+    { src: 'music/yirunian.mp3', cover: 'images/music/yirunian.jpg', title: '一如年少模样', artist: '陈鸿宇', album: '一如年少模样', dur: '4:22' },
+    { src: 'music/zaochun.mp3', cover: 'images/music/zaochun.jpg', title: '早春的树', artist: '陈鸿宇', album: '浓烟下的诗歌电台', dur: '3:56' },
+    { src: 'music/xingge.mp3', cover: 'images/music/xingge.jpg', title: '行歌', artist: '陈鸿宇', album: '一如年少模样', dur: '4:47' },
+    { src: 'music/laixin.mp3', cover: 'images/music/laixin.jpg', title: '来信', artist: '陈鸿宇', album: '浓烟下的诗歌电台', dur: '4:21' },
+    { src: 'music/eerguna.mp3', cover: 'images/music/eerguna.jpg', title: '额尔古纳', artist: '陈鸿宇', album: '一如年少模样', dur: '4:05' },
+    { src: 'music/nihong.mp3', cover: 'images/music/nihong.jpg', title: '霓虹深处', artist: '陈鸿宇', album: '浓烟下的诗歌电台', dur: '4:56' },
+    { src: 'music/yuhao.mp3', cover: 'images/music/yuhao.jpg', title: '雨好', artist: '陈鸿宇', album: '一如年少模样', dur: '4:15' },
+    { src: 'music/chuanzi.mp3', cover: 'images/music/chuanzi.jpg', title: '船子', artist: '陈鸿宇', album: '民谣地图·拾众而歌', dur: '3:36' },
+    { src: 'music/zuori.mp3', cover: 'images/music/zuori.jpg', title: '昨日的你', artist: '陈鸿宇', album: '与荒野', dur: '4:20' },
+    { src: 'music/qiu_niang.mp3', cover: 'images/music/qiu_niang.jpg', title: '秋酿', artist: '房东的猫', album: '房东的猫', dur: '3:46' },
+    { src: 'music/baijing.mp3', cover: 'images/music/baijing.jpg', title: '白鲸', artist: '房东的猫', album: '柔软', dur: '4:10' },
+    { src: 'music/ruchang.mp3', cover: 'images/music/ruchang.jpg', title: '如常', artist: '房东的猫', album: '柔软', dur: '5:49' },
+    { src: 'music/bugui.mp3', cover: 'images/music/bugui.jpg', title: '不知归期的故人', artist: '房东的猫', album: '房东的猫', dur: '4:15' },
+    { src: 'music/duantan.mp3', cover: 'images/music/duantan.jpg', title: '短叹', artist: '房东的猫 / 梁晓雪', album: '房东的猫', dur: '3:59' },
+    { src: 'music/xinchang.mp3', cover: 'images/music/xinchang.jpg', title: '心想唱歌就唱歌', artist: '程璧', album: '心想唱歌就唱歌', dur: '3:09' },
+    { src: 'music/chunfen.mp3', cover: 'images/music/chunfen.jpg', title: '春分的夜', artist: '程璧', album: '我想和你虚度时光', dur: '4:46' },
+    { src: 'music/siguxiang.mp3', cover: 'images/music/siguxiang.jpg', title: '思故乡', artist: '程璧', album: '晴日共剪窗', dur: '3:33' },
   ];
   const audio = new Audio();
   audio.preload = 'none';
@@ -1029,13 +1092,142 @@
     });
   });
 
-  // 音乐栏列表
-  document.querySelectorAll('.music-item').forEach((it, k) => {
-    it.addEventListener('click', () => {
-      if (k === curIdx && !audio.paused) { audio.pause(); playing = false; syncUI(); return; }
-      playTrack(k);
+  // ===== 曲库渲染 =====
+  const musicList = document.getElementById('musicList');
+  if (musicList) {
+    musicList.innerHTML = PLAYLIST.map((t, k) =>
+      '<div class="music-item" data-idx="' + k + '">' +
+        '<img src="' + t.cover + '" alt="" loading="lazy">' +
+        '<div class="mi-info"><span class="mi-title">' + t.title + '</span><span class="mi-artist">' + t.artist + '</span></div>' +
+        '<span class="mi-dur">' + t.dur + '</span>' +
+        '<button class="mi-play" aria-label="播放"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>' +
+      '</div>'
+    ).join('');
+    musicList.querySelectorAll('.music-item').forEach(it => {
+      it.addEventListener('click', () => {
+        const k = Number(it.dataset.idx);
+        if (k === curIdx && !audio.paused) { audio.pause(); playing = false; syncUI(); return; }
+        playTrack(k);
+      });
+    });
+  }
+
+  // ===== tab 切换 =====
+  document.querySelectorAll('.mtab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.mtab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.mtab-panel').forEach(p => p.style.display = 'none');
+      const panel = document.getElementById('panel-' + btn.dataset.tab);
+      if (panel) panel.style.display = '';
+      if (btn.dataset.tab === 'rank' && !rankLoaded) loadRank('hot');
+      if (btn.dataset.tab === 'reco' && !recoLoaded) loadReco();
     });
   });
+
+  // ===== 排行 =====
+  let rankLoaded = false, recoLoaded = false;
+  async function api(path) {
+    const r = await fetch('/music-api' + path);
+    if (!r.ok) throw new Error('api ' + r.status);
+    return r.json();
+  }
+  function renderTrackList(el, tracks, prefix) {
+    el.innerHTML = tracks.map((t, i) =>
+      '<div class="rank-item" data-id="' + t.id + '" data-title="' + t.title + '" data-artist="' + t.artist + '" data-cover="' + (t.cover || '') + '">' +
+        '<span class="rk-no' + (i < 3 ? ' top' : '') + '">' + (i + 1) + '</span>' +
+        (t.cover ? '<img src="' + t.cover + '" alt="" loading="lazy">' : '') +
+        '<div class="rk-info"><span class="rk-title">' + t.title + '</span><span class="rk-artist">' + t.artist + '</span></div>' +
+        '<span class="rk-play">▶</span>' +
+      '</div>'
+    ).join('');
+    el.querySelectorAll('.rank-item').forEach(item => {
+      item.addEventListener('click', async () => {
+        // 在线播放
+        const d = await api('/api/play?id=' + item.dataset.id).catch(() => ({ url: null }));
+        if (d.url) {
+          playOnline(d.url, item);
+        } else {
+          window.open('https://music.163.com/song?id=' + item.dataset.id, '_blank');
+        }
+      });
+    });
+  }
+  function playOnline(url, item) {
+    curIdx = -1;
+    document.querySelectorAll('[data-ep-cover]').forEach(img => img.src = item.dataset.cover || 'images/music/yunduan.jpg');
+    document.querySelectorAll('[data-ep-title]').forEach(el => el.textContent = item.dataset.title);
+    document.querySelectorAll('[data-ep-artist]').forEach(el => el.textContent = item.dataset.artist);
+    document.querySelectorAll('[data-ep-time]').forEach(el => el.textContent = '0:00 / ' + (item.dataset.dur || ''));
+    audio.src = url;
+    playing = true; syncUI();
+    audio.play().catch(e => { playing = false; syncUI(); });
+    document.querySelectorAll('.rank-item').forEach(i => i.classList.remove('playing'));
+    item.classList.add('playing');
+  }
+  async function loadRank(type) {
+    rankLoaded = true;
+    const el = document.getElementById('rankList');
+    el.innerHTML = '<p class="music-note">加载中…</p>';
+    try {
+      const d = await api('/api/rank?type=' + type);
+      renderTrackList(el, d.tracks);
+    } catch (e) {
+      el.innerHTML = '<p class="music-note">排行加载失败</p>';
+    }
+  }
+  document.querySelectorAll('.rtab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.rtab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadRank(btn.dataset.rank);
+    });
+  });
+
+  // ===== 搜索 =====
+  const searchInput = document.getElementById('searchInput');
+  const searchBtn = document.getElementById('searchBtn');
+  const searchList = document.getElementById('searchList');
+  async function doSearch() {
+    const q = searchInput.value.trim();
+    if (!q) return;
+    searchList.innerHTML = '<p class="music-note">搜索中…</p>';
+    try {
+      const d = await api('/api/search?q=' + encodeURIComponent(q));
+      if (!d.songs || !d.songs.length) { searchList.innerHTML = '<p class="music-note">没搜到</p>'; return; }
+      renderTrackList(searchList, d.songs.map(s => ({
+        id: s.id, title: s.title, artist: s.artists, cover: s.album_cover || '',
+      })));
+    } catch (e) {
+      searchList.innerHTML = '<p class="music-note">搜索失败</p>';
+    }
+  }
+  if (searchBtn) searchBtn.addEventListener('click', doSearch);
+  if (searchInput) searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') doSearch(); });
+
+  // ===== 推荐歌单 =====
+  async function loadReco() {
+    recoLoaded = true;
+    const el = document.getElementById('recoGrid');
+    el.innerHTML = '<p class="music-note">加载中…</p>';
+    try {
+      const d = await api('/api/recommend');
+      el.innerHTML = d.lists.map(l =>
+        '<div class="reco-card" data-id="' + l.id + '">' +
+          '<img src="' + l.cover + '" alt="" loading="lazy">' +
+          '<span class="rc-name">' + l.name + '</span>' +
+          '<span class="rc-count">' + (l.count >= 10000 ? Math.round(l.count / 10000) + '万' : l.count) + ' 播放</span>' +
+        '</div>'
+      ).join('');
+      el.querySelectorAll('.reco-card').forEach(card => {
+        card.addEventListener('click', () => {
+          window.open('https://music.163.com/playlist?id=' + card.dataset.id, '_blank');
+        });
+      });
+    } catch (e) {
+      el.innerHTML = '<p class="music-note">推荐加载失败</p>';
+    }
+  }
 
   // audio 事件
   audio.addEventListener('timeupdate', () => {
