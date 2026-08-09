@@ -494,6 +494,10 @@
     <span class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
     <span class="item-text">写字的时光</span>
   </a>
+  <a class="item" href="/essays/comments.html" data-external>
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span class="item-text">留言</span>
+  </a>
   <a class="item" data-target="about" href="javascript:void(0)">
     <span class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-linecap="square"><path d="M24 40.5V41L24 10V10.5"/><path d="M24 41C31.0005 36.9995 37.9995 36.9995 45 41V10.0003C37.9995 5.99989 31.0005 5.99989 24 10.0003C16.9995 5.99989 10.0005 5.99989 3 10.0003V41C10.0005 36.9995 16.9995 36.9995 24 41Z"/><path d="M30 16.5C32.8362 15.1345 36.5662 15.06 39.5 16.2763"/><path d="M30 23.5832C32.8362 22.2178 36.5662 22.1432 39.5 23.3596"/><path d="M30 30.6665C32.8362 29.301 36.5662 29.2265 39.5 30.4428"/></svg></span>
     <span class="item-text">关于</span>
@@ -598,18 +602,7 @@
 
 
       <div class="end-mark">❦</div>
-      <div class="comments" data-comments>
-        <h3 class="cm-title">想说的话</h3>
-        <div class="cm-list" data-cm-list></div>
-        <div class="cm-form">
-          <input type="text" class="cm-name" placeholder="昵称(可选)" maxlength="20" autocomplete="off">
-          <textarea class="cm-input" placeholder="读完要是想起点什么，写在这里" maxlength="300" rows="2"></textarea>
-          <div class="cm-row">
-            <button class="cm-submit">写下</button>
-            <span class="cm-tip"></span>
-          </div>
-        </div>
-      </div>
+
 
     </div>
   </section>
@@ -699,18 +692,7 @@
 
 
       <div class="end-mark">❦</div>
-      <div class="comments" data-comments>
-        <h3 class="cm-title">想说的话</h3>
-        <div class="cm-list" data-cm-list></div>
-        <div class="cm-form">
-          <input type="text" class="cm-name" placeholder="昵称(可选)" maxlength="20" autocomplete="off">
-          <textarea class="cm-input" placeholder="读完要是想起点什么，写在这里" maxlength="300" rows="2"></textarea>
-          <div class="cm-row">
-            <button class="cm-submit">写下</button>
-            <span class="cm-tip"></span>
-          </div>
-        </div>
-      </div>
+
 
     </div>
   </section>
@@ -795,18 +777,7 @@
 
 
       <div class="end-mark">❦</div>
-      <div class="comments" data-comments>
-        <h3 class="cm-title">想说的话</h3>
-        <div class="cm-list" data-cm-list></div>
-        <div class="cm-form">
-          <input type="text" class="cm-name" placeholder="昵称(可选)" maxlength="20" autocomplete="off">
-          <textarea class="cm-input" placeholder="读完要是想起点什么，写在这里" maxlength="300" rows="2"></textarea>
-          <div class="cm-row">
-            <button class="cm-submit">写下</button>
-            <span class="cm-tip"></span>
-          </div>
-        </div>
-      </div>
+
 
     </div>
   </section>
@@ -904,18 +875,7 @@
 
 
       <div class="end-mark">❦</div>
-      <div class="comments" data-comments>
-        <h3 class="cm-title">想说的话</h3>
-        <div class="cm-list" data-cm-list></div>
-        <div class="cm-form">
-          <input type="text" class="cm-name" placeholder="昵称(可选)" maxlength="20" autocomplete="off">
-          <textarea class="cm-input" placeholder="读完要是想起点什么，写在这里" maxlength="300" rows="2"></textarea>
-          <div class="cm-row">
-            <button class="cm-submit">写下</button>
-            <span class="cm-tip"></span>
-          </div>
-        </div>
-      </div>
+
 
     </div>
   </section>
@@ -1063,18 +1023,7 @@
 
 
       <div class="end-mark">❦</div>
-      <div class="comments" data-comments>
-        <h3 class="cm-title">想说的话</h3>
-        <div class="cm-list" data-cm-list></div>
-        <div class="cm-form">
-          <input type="text" class="cm-name" placeholder="昵称(可选)" maxlength="20" autocomplete="off">
-          <textarea class="cm-input" placeholder="读完要是想起点什么，写在这里" maxlength="300" rows="2"></textarea>
-          <div class="cm-row">
-            <button class="cm-submit">写下</button>
-            <span class="cm-tip"></span>
-          </div>
-        </div>
-      </div>
+
 
     </div>
   </section>
@@ -1104,7 +1053,10 @@
         <button id="shareClose" class="share-close">关闭</button>
       </div>
 <script>
-  const links = document.querySelectorAll('nav.sidebar a.item');
+  const links = document.querySelectorAll('nav.sidebar a.item:not([data-external])');
+  document.querySelectorAll('nav.sidebar a.item[data-external]').forEach(ext => {
+    ext.addEventListener('click', () => {});
+  });
   const essays = document.querySelectorAll('section.essay');
   links.forEach(link => {
     link.addEventListener('click', () => {
@@ -1420,77 +1372,6 @@
     playing = false; syncUI();
   });
 
-
-  // ===== 留言板 =====
-  document.querySelectorAll('[data-comments]').forEach(box => {
-    const essay = box.closest('section.essay').id;
-    const list = box.querySelector('[data-cm-list]');
-    const nameEl = box.querySelector('.cm-name');
-    const inputEl = box.querySelector('.cm-input');
-    const submitBtn = box.querySelector('.cm-submit');
-    const tipEl = box.querySelector('.cm-tip');
-
-    function render(cms) {
-      if (!cms.length) {
-        list.innerHTML = '<p class="cm-empty">还没有留言。读完要是想起点什么，写下来。</p>';
-        return;
-      }
-      list.innerHTML = '';
-      cms.forEach(cm => {
-        const item = document.createElement('div');
-        item.className = 'cm-item';
-        const meta = document.createElement('div');
-        meta.className = 'cm-meta';
-        const nm = document.createElement('span');
-        nm.textContent = cm.name;
-        const tm = document.createElement('span');
-        const d = new Date(cm.time);
-        tm.textContent = (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-        meta.appendChild(nm); meta.appendChild(tm);
-        const body = document.createElement('div');
-        body.className = 'cm-body';
-        body.textContent = cm.content; // textContent 防 XSS
-        item.appendChild(meta); item.appendChild(body);
-        list.appendChild(item);
-      });
-    }
-
-    async function load() {
-      try {
-        const r = await fetch('/music-api/api/comments?essay=' + essay);
-        const d = await r.json();
-        render(d.comments || []);
-      } catch (e) { list.innerHTML = '<p class="cm-empty">留言加载失败</p>'; }
-    }
-
-    submitBtn.addEventListener('click', async () => {
-      const content = inputEl.value.trim();
-      if (!content) { tipEl.textContent = '写点什么吧'; return; }
-      submitBtn.disabled = true;
-      tipEl.textContent = '';
-      try {
-        const r = await fetch('/music-api/api/comments', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ essay, name: nameEl.value.trim(), content }),
-        });
-        const d = await r.json();
-        if (d.ok) {
-          inputEl.value = '';
-          tipEl.textContent = '写下了';
-          setTimeout(() => { tipEl.textContent = ''; }, 2000);
-          load();
-        } else {
-          tipEl.textContent = d.error || '失败';
-        }
-      } catch (e) {
-        tipEl.textContent = '网络错误';
-      }
-      submitBtn.disabled = false;
-    });
-
-    load();
-  });
 
   // ===== 分享卡片 =====
   const QUOTES = {

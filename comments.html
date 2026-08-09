@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>想说的话 · 散文集</title>
+<style>
+  :root {
+    --bg: #faf6ef;
+    --text: #2b2620;
+    --muted: #8a8178;
+    --line: #e3dbcd;
+    --brand: #d95c41;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: "Noto Serif SC", "Songti SC", serif;
+    line-height: 1.8; -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 640px; margin: 0 auto; padding: 2.4rem 1.4rem 4rem; }
+  .topline { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.9rem; margin-bottom: 2.6rem; }
+  .topline .brand { color: var(--brand); font-weight: 600; letter-spacing: 0.1em; }
+  .topline .brand small { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.05em; margin-left: 0.4rem; }
+  .topline a { color: var(--muted); text-decoration: none; font-size: 0.85rem; }
+  .topline a:hover { color: var(--brand); }
+  h1 { font-size: 1.6rem; font-weight: 600; letter-spacing: 0.06em; }
+  .sub { color: var(--muted); font-size: 0.92rem; margin: 0.5rem 0 2rem; }
+  .cm-list { display: flex; flex-direction: column; gap: 0.9rem; margin-bottom: 2.4rem; }
+  .cm-item { padding: 0.9rem 1rem; border: 1px solid var(--line); border-radius: 12px; background: color-mix(in srgb, var(--bg) 98%, #fff); }
+  .cm-meta { display: flex; gap: 0.6rem; align-items: baseline; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.3rem; flex-wrap: wrap; }
+  .cm-meta .cm-essay { color: var(--brand); border: 1px solid color-mix(in srgb, var(--brand) 40%, transparent); border-radius: 999px; padding: 0 0.5rem; font-size: 0.72rem; }
+  .cm-body { font-size: 0.95rem; line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+  .cm-empty { color: var(--muted); font-size: 0.9rem; padding: 1rem 0 1.4rem; }
+  .cm-form { border-top: 1px solid var(--line); padding-top: 1.4rem; display: flex; flex-direction: column; gap: 0.6rem; }
+  .cm-form label { font-size: 0.85rem; color: var(--muted); }
+  .cm-name, .cm-select, .cm-input {
+    background: none; border: 1px solid var(--line); border-radius: 10px;
+    padding: 0.55rem 0.8rem; color: var(--text); font-size: 0.92rem; font-family: inherit;
+    outline: none; transition: border-color .15s; resize: vertical;
+  }
+  .cm-name { max-width: 220px; }
+  .cm-select { max-width: 240px; }
+  .cm-input:focus, .cm-name:focus, .cm-select:focus { border-color: var(--brand); }
+  .cm-row { display: flex; align-items: center; gap: 0.8rem; }
+  .cm-submit { background: var(--brand); color: #fff; border: none; border-radius: 10px; padding: 0.55rem 1.6rem; font-size: 0.95rem; cursor: pointer; font-family: inherit; transition: opacity .15s; }
+  .cm-submit:hover { opacity: 0.9; }
+  .cm-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .cm-tip { font-size: 0.8rem; color: var(--muted); }
+  .footer { margin-top: 3rem; text-align: center; color: var(--muted); font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="topline">
+    <span class="brand">散文集<small>ESSAYS</small></span>
+    <a href="/essays/">← 回首页</a>
+  </div>
+
+  <h1>想说的话</h1>
+  <p class="sub">读完要是想起点什么，写下来。日子会走远，字不会。</p>
+
+  <div class="cm-list" id="cmList">
+    <p class="cm-empty">加载中…</p>
+  </div>
+
+  <div class="cm-form">
+    <label>留下点什么</label>
+    <input type="text" class="cm-name" id="cmName" placeholder="昵称（可选）" maxlength="20" autocomplete="off">
+    <select class="cm-select" id="cmEssay">
+      <option value="about">关于 · 随便聊聊</option>
+      <option value="e4">为了不可计算的未来</option>
+      <option value="e1">雨知道</option>
+      <option value="e2">我爸捡了个猫</option>
+      <option value="e3">台风来了</option>
+    </select>
+    <textarea class="cm-input" id="cmInput" placeholder="写下想说的话" maxlength="300" rows="3"></textarea>
+    <div class="cm-row">
+      <button class="cm-submit" id="cmSubmit">写下</button>
+      <span class="cm-tip" id="cmTip"></span>
+    </div>
+  </div>
+
+  <div class="footer">四篇散文，始于一个闷热的夏夜。</div>
+</div>
+
+<script>
+  const ESSAY_NAMES = { e1: '雨知道', e2: '我爸捡了个猫', e3: '台风来了', e4: '为了不可计算的未来', about: '关于' };
+  const list = document.getElementById('cmList');
+  const nameEl = document.getElementById('cmName');
+  const essayEl = document.getElementById('cmEssay');
+  const inputEl = document.getElementById('cmInput');
+  const submitBtn = document.getElementById('cmSubmit');
+  const tipEl = document.getElementById('cmTip');
+
+  function render(cms) {
+    if (!cms.length) {
+      list.innerHTML = '<p class="cm-empty">还没有留言。读完要是想起点什么，写下来。</p>';
+      return;
+    }
+    list.innerHTML = '';
+    cms.forEach(cm => {
+      const item = document.createElement('div');
+      item.className = 'cm-item';
+      const meta = document.createElement('div');
+      meta.className = 'cm-meta';
+      const nm = document.createElement('span');
+      nm.textContent = cm.name;
+      const tag = document.createElement('span');
+      tag.className = 'cm-essay';
+      tag.textContent = '《' + (ESSAY_NAMES[cm.essay] || '散文') + '》';
+      const tm = document.createElement('span');
+      const d = new Date(cm.time);
+      tm.textContent = (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+      meta.appendChild(nm); meta.appendChild(tag); meta.appendChild(tm);
+      const body = document.createElement('div');
+      body.className = 'cm-body';
+      body.textContent = cm.content;
+      item.appendChild(meta); item.appendChild(body);
+      list.appendChild(item);
+    });
+  }
+
+  async function load() {
+    try {
+      const r = await fetch('/music-api/api/comments');
+      const d = await r.json();
+      render(d.comments || []);
+    } catch (e) { list.innerHTML = '<p class="cm-empty">留言加载失败</p>'; }
+  }
+
+  submitBtn.addEventListener('click', async () => {
+    const content = inputEl.value.trim();
+    if (!content) { tipEl.textContent = '写点什么吧'; return; }
+    submitBtn.disabled = true;
+    tipEl.textContent = '';
+    try {
+      const r = await fetch('/music-api/api/comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ essay: essayEl.value, name: nameEl.value.trim(), content }),
+      });
+      const d = await r.json();
+      if (d.ok) {
+        inputEl.value = '';
+        tipEl.textContent = '写下了';
+        setTimeout(() => { tipEl.textContent = ''; }, 2000);
+        load();
+      } else {
+        tipEl.textContent = d.error || '失败';
+      }
+    } catch (e) { tipEl.textContent = '网络错误'; }
+    submitBtn.disabled = false;
+  });
+
+  load();
+</script>
+</body>
+</html>
