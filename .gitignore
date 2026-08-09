@@ -1,0 +1,21 @@
+# 依赖
+node_modules/
+dist/
+
+# 密钥/凭证(严禁提交!)
+.env
+*.cookie
+ncm-cookie*
+*_cookie*
+MUSIC_U*
+
+# 版权音频与封面(不入库,部署时从网易云拉)
+music/*.mp3
+images/music/*.jpg
+
+# 留言数据
+data/
+
+# 系统文件
+.DS_Store
+*.log
