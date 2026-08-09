@@ -37,17 +37,55 @@ async function neteaseJson(path: string): Promise<any> {
 
 const app = new Hono();
 
-// CORS
+// CORS:仅允许散文站域名(防第三方网站白嫖 API)
+const ALLOW_ORIGIN = ['https://nextai.show', 'http://nextai.show', 'http://localhost', 'http://127.0.0.1'];
 app.use('*', async (c, next) => {
+  const origin = c.req.header('Origin') || '';
+  const referer = c.req.header('Referer') || '';
+  const ok =
+    !origin || // 同源/无 Origin(如 curl)放行,靠 Referer 兜底
+    ALLOW_ORIGIN.some((o) => origin.startsWith(o)) ||
+    ALLOW_ORIGIN.some((o) => referer.startsWith(o));
   await next();
-  c.header('Access-Control-Allow-Origin', '*');
-  c.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  if (ok) {
+    const allowOrigin = origin && ALLOW_ORIGIN.some((o) => origin.startsWith(o))
+      ? origin
+      : 'https://nextai.show';
+    c.header('Access-Control-Allow-Origin', allowOrigin);
+    c.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    c.header('Access-Control-Allow-Headers', 'Content-Type');
+  } else {
+    c.header('Access-Control-Allow-Origin', 'null');
+  }
 });
+
+// 限速:按 IP + 接口分类(防滥用/防网易云风控)
+const rateLimits: Record<string, { max: number; win: number }> = {
+  search: { max: 20, win: 60_000 },
+  play: { max: 40, win: 60_000 },
+  rank: { max: 30, win: 60_000 },
+  comments: { max: 5, win: 60_000 },
+};
+const hits = new Map<string, number[]>();
+function rateLimit(key: string, cat: string): boolean {
+  const cfg = rateLimits[cat];
+  if (!cfg) return true;
+  const now = Date.now();
+  const arr = (hits.get(key) || []).filter((t) => now - t < cfg.win);
+  if (arr.length >= cfg.max) return false;
+  arr.push(now);
+  hits.set(key, arr);
+  return true;
+}
+function clientIp(c: any): string {
+  return c.req.header('x-real-ip') || c.req.header('x-forwarded-for')?.split(',')[0] || 'unknown';
+}
 
 // 搜索:调 neteasemusic CLI(稳定免登录)
 app.get('/api/search', async (c) => {
   const q = c.req.query('q')?.trim();
   if (!q) return c.json({ error: 'missing q' }, 400);
+  if (!rateLimit(clientIp(c) + ':search', 'search')) return c.json({ error: '太频繁了,慢一点' }, 429);
   try {
     const { stdout } = await exec('neteasemusic', ['song', q, '-o', 'json'], {
       timeout: 20000,
@@ -66,6 +104,7 @@ app.get('/api/rank', async (c) => {
   const type = c.req.query('type') || 'hot';
   const rank = RANKS[type];
   if (!rank) return c.json({ error: 'unknown rank type' }, 400);
+  if (!rateLimit(clientIp(c) + ':rank', 'rank')) return c.json({ error: '太频繁了,慢一点' }, 429);
   try {
     const limit = Math.min(Number(c.req.query('limit')) || 10, 50);
     const data = await NCM.playlist_track_all({ id: rank.id, limit, offset: 0 });
@@ -166,6 +205,7 @@ app.get('/api/login/status', async (c) => {
 app.get('/api/play', async (c) => {
   const id = c.req.query('id');
   if (!id) return c.json({ error: 'missing id' }, 400);
+  if (!rateLimit(clientIp(c) + ':play', 'play')) return c.json({ error: '太频繁了,慢一点' }, 429);
   try {
     const r = await NCM.song_url_v1({ id: Number(id), level: 'standard', cookie: musicCookie || '' });
     const data = r.body?.data?.[0];
@@ -173,6 +213,50 @@ app.get('/api/play', async (c) => {
   } catch (e: any) {
     return c.json({ error: String(e?.message || e) }, 500);
   }
+});
+
+// ===== 留言板(散文站) =====
+import { mkdirSync } from 'node:fs';
+
+const COMMENTS_FILE = '/var/www/essays/data/comments.json';
+const postLimits = new Map<string, number>(); // ip -> lastTs
+
+function loadComments(): any[] {
+  try {
+    if (!existsSync(COMMENTS_FILE)) return [];
+    return JSON.parse(readFileSync(COMMENTS_FILE, 'utf8'));
+  } catch { return []; }
+}
+
+function saveComments(list: any[]) {
+  mkdirSync('/var/www/essays/data', { recursive: true });
+  writeFileSync(COMMENTS_FILE, JSON.stringify(list, null, 1));
+}
+
+app.get('/api/comments', (c) => {
+  const essay = c.req.query('essay') || '';
+  const list = loadComments().filter((x) => !essay || x.essay === essay);
+  return c.json({ comments: list.slice(-50).reverse() });
+});
+
+app.post('/api/comments', async (c) => {
+  const ip = clientIp(c);
+  const now = Date.now();
+  if (!rateLimit(ip + ':comments', 'comments')) return c.json({ error: '太快了,慢一点' }, 429);
+  if (postLimits.has(ip) && now - (postLimits.get(ip) || 0) < 30000) {
+    return c.json({ error: '太快了，30 秒后再试' }, 429);
+  }
+  let body: any = {};
+  try { body = await c.req.json(); } catch {}
+  const essay = String(body.essay || '').slice(0, 16);
+  const name = String(body.name || '匿名').slice(0, 20);
+  const content = String(body.content || '').slice(0, 300);
+  if (!essay || !content.trim()) return c.json({ error: '内容不能为空' }, 400);
+  const list = loadComments();
+  list.push({ essay, name: name.trim() || '匿名', content: content.trim(), time: now });
+  saveComments(list);
+  postLimits.set(ip, now);
+  return c.json({ ok: true });
 });
 
 const PORT = Number(process.env.PORT || 8799);

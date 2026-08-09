@@ -247,7 +247,62 @@
   @media (max-width: 480px) {
     .essay-player { max-width: none; }
     .ep-cover { width: 52px; height: 52px; }
-  }  /* 音乐 tab */
+  }  /* 分享卡片 */
+  .share-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; margin-left: 0.6rem;
+    border: 1px solid var(--line); border-radius: 50%;
+    background: none; color: var(--brand); font-size: 0.95rem;
+    cursor: pointer; transition: all .15s; vertical-align: middle; line-height: 1;
+  }
+  .share-btn:hover { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .share-modal {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+    align-items: center; justify-content: center; flex-direction: column; gap: 0.8rem; padding: 1rem;
+  }
+  .share-modal.show { display: flex; }
+  .share-modal-inner {
+    display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
+    max-height: 92vh; overflow: auto;
+  }
+  #shareCanvas {
+    width: min(420px, 88vw); height: auto;
+    border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    background: #faf6ef;
+  }
+  .share-actions { display: flex; gap: 0.7rem; }
+  .share-close {
+    background: none; border: 1px solid var(--line); color: #fff;
+    border-radius: 8px; padding: 0.4rem 1.2rem; font-size: 0.88rem; cursor: pointer; font-family: inherit;
+  }
+  .share-hint { color: rgba(255,255,255,0.8); font-size: 0.8rem; margin: 0; }
+  /* 留言板 */
+  .comments { margin: 2rem 0 0.5rem; padding-top: 1.2rem; border-top: 1px solid var(--line); }
+  .cm-title { font-size: 0.95rem; font-weight: 500; margin: 0 0 0.8rem; }
+  .cm-list { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1rem; }
+  .cm-item { padding: 0.55rem 0.7rem; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--bg) 97%, transparent); }
+  .cm-item .cm-meta { display: flex; gap: 0.5rem; align-items: baseline; font-size: 0.76rem; color: var(--muted); margin-bottom: 0.25rem; }
+  .cm-item .cm-body { font-size: 0.9rem; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+  .cm-empty { font-size: 0.85rem; color: var(--muted); }
+  .cm-form { display: flex; flex-direction: column; gap: 0.45rem; }
+  .cm-name, .cm-input {
+    background: none; border: 1px solid var(--line); border-radius: 8px;
+    padding: 0.45rem 0.7rem; color: var(--text); font-size: 0.88rem; font-family: inherit;
+    outline: none; transition: border-color .15s; resize: vertical;
+  }
+  .cm-name { max-width: 200px; }
+  .cm-input:focus, .cm-name:focus { border-color: var(--brand); }
+  .cm-row { display: flex; align-items: center; gap: 0.7rem; }
+  .cm-submit {
+    background: var(--brand); color: #fff; border: none; border-radius: 8px;
+    padding: 0.4rem 1.2rem; font-size: 0.88rem; cursor: pointer; font-family: inherit;
+    transition: opacity .15s;
+  }
+  .cm-submit:hover { opacity: 0.9; }
+  .cm-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .cm-tip { font-size: 0.76rem; color: var(--muted); }
+  /* 音乐 tab */
   .music-tabs { display: flex; gap: 0.4rem; margin: 0.6rem 0 1.2rem; }
   .mtab {
     background: none; border: 1px solid var(--line); border-radius: 999px;
@@ -409,6 +464,7 @@
     nav.sidebar a.item .en { display: none; }
   }
 </style>
+<script src="js/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -487,7 +543,8 @@
   </g>
 </svg></div>
       <h1>为了不可计算的<em>未来</em></h1>
-      <div class="date-line">2026-08-09</div>
+      <div class="date-line">2026-08-09</div>      <button class="share-btn" data-share title="分享">↗</button>
+
 
       <div class="essay-player" data-player data-plist="all">
         <div class="ep-cover" data-ep-disc>
@@ -541,6 +598,19 @@
 
 
       <div class="end-mark">❦</div>
+      <div class="comments" data-comments>
+        <h3 class="cm-title">想说的话</h3>
+        <div class="cm-list" data-cm-list></div>
+        <div class="cm-form">
+          <input type="text" class="cm-name" placeholder="昵称(可选)" maxlength="20" autocomplete="off">
+          <textarea class="cm-input" placeholder="读完要是想起点什么，写在这里" maxlength="300" rows="2"></textarea>
+          <div class="cm-row">
+            <button class="cm-submit">写下</button>
+            <span class="cm-tip"></span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 <section class="essay" id="e1">
@@ -580,7 +650,8 @@
 </svg></div>
       <h1>雨<em>知道</em></h1>
       <div class="sub">—— 写给每一个淋过雨、等过晴天的人</div>
-      <div class="date-line">2026-08-09</div>
+      <div class="date-line">2026-08-09</div>      <button class="share-btn" data-share title="分享">↗</button>
+
 
       <div class="essay-player" data-player data-plist="all">
         <div class="ep-cover" data-ep-disc>
@@ -628,6 +699,19 @@
 
 
       <div class="end-mark">❦</div>
+      <div class="comments" data-comments>
+        <h3 class="cm-title">想说的话</h3>
+        <div class="cm-list" data-cm-list></div>
+        <div class="cm-form">
+          <input type="text" class="cm-name" placeholder="昵称(可选)" maxlength="20" autocomplete="off">
+          <textarea class="cm-input" placeholder="读完要是想起点什么，写在这里" maxlength="300" rows="2"></textarea>
+          <div class="cm-row">
+            <button class="cm-submit">写下</button>
+            <span class="cm-tip"></span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 <section class="essay" id="e2">
@@ -656,7 +740,8 @@
 </svg></div>
       <h1>我爸捡了个<em>猫</em></h1>
       <div class="sub">—— 记一只不服从设置的猫</div>
-      <div class="date-line">2026-08-09</div>
+      <div class="date-line">2026-08-09</div>      <button class="share-btn" data-share title="分享">↗</button>
+
 
       <div class="essay-player" data-player data-plist="all">
         <div class="ep-cover" data-ep-disc>
@@ -710,6 +795,19 @@
 
 
       <div class="end-mark">❦</div>
+      <div class="comments" data-comments>
+        <h3 class="cm-title">想说的话</h3>
+        <div class="cm-list" data-cm-list></div>
+        <div class="cm-form">
+          <input type="text" class="cm-name" placeholder="昵称(可选)" maxlength="20" autocomplete="off">
+          <textarea class="cm-input" placeholder="读完要是想起点什么，写在这里" maxlength="300" rows="2"></textarea>
+          <div class="cm-row">
+            <button class="cm-submit">写下</button>
+            <span class="cm-tip"></span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
       <section class="essay" id="e3">
@@ -749,7 +847,8 @@
 </svg></div>
       <h1>台风<em>来了</em></h1>
       <div class="sub">—— 记一年里唯一被迫停下来的一天</div>
-      <div class="date-line">2026-08-09</div>
+      <div class="date-line">2026-08-09</div>      <button class="share-btn" data-share title="分享">↗</button>
+
 
       <div class="essay-player" data-player data-plist="all">
         <div class="ep-cover" data-ep-disc>
@@ -805,6 +904,19 @@
 
 
       <div class="end-mark">❦</div>
+      <div class="comments" data-comments>
+        <h3 class="cm-title">想说的话</h3>
+        <div class="cm-list" data-cm-list></div>
+        <div class="cm-form">
+          <input type="text" class="cm-name" placeholder="昵称(可选)" maxlength="20" autocomplete="off">
+          <textarea class="cm-input" placeholder="读完要是想起点什么，写在这里" maxlength="300" rows="2"></textarea>
+          <div class="cm-row">
+            <button class="cm-submit">写下</button>
+            <span class="cm-tip"></span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
                 <section class="essay" id="music">
@@ -908,7 +1020,8 @@
 </svg></div>
       <div class="kicker">关于 · 良质</div>
       <h1>这个<em>散文集</em></h1>
-      <div class="date-line">阿斯温月</div>
+      <div class="date-line">阿斯温月</div>      <button class="share-btn" data-share title="分享">↗</button>
+
 
       <div class="essay-player" data-player data-plist="all">
         <div class="ep-cover" data-ep-disc>
@@ -950,6 +1063,19 @@
 
 
       <div class="end-mark">❦</div>
+      <div class="comments" data-comments>
+        <h3 class="cm-title">想说的话</h3>
+        <div class="cm-list" data-cm-list></div>
+        <div class="cm-form">
+          <input type="text" class="cm-name" placeholder="昵称(可选)" maxlength="20" autocomplete="off">
+          <textarea class="cm-input" placeholder="读完要是想起点什么，写在这里" maxlength="300" rows="2"></textarea>
+          <div class="cm-row">
+            <button class="cm-submit">写下</button>
+            <span class="cm-tip"></span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 </main>
@@ -969,6 +1095,14 @@
     </div>
     <button id="pbClose" aria-label="关闭">✕</button>
   </div>
+
+  <div id="shareModal" class="share-modal">
+    <div class="share-modal-inner">
+      <canvas id="shareCanvas" width="900" height="1350"></canvas>
+      <div class="share-actions">
+        <button id="shareDownload" class="cm-submit">保存图片</button>
+        <button id="shareClose" class="share-close">关闭</button>
+      </div>
 <script>
   const links = document.querySelectorAll('nav.sidebar a.item');
   const essays = document.querySelectorAll('section.essay');
@@ -1286,6 +1420,167 @@
     playing = false; syncUI();
   });
 
-</script>
+
+  // ===== 留言板 =====
+  document.querySelectorAll('[data-comments]').forEach(box => {
+    const essay = box.closest('section.essay').id;
+    const list = box.querySelector('[data-cm-list]');
+    const nameEl = box.querySelector('.cm-name');
+    const inputEl = box.querySelector('.cm-input');
+    const submitBtn = box.querySelector('.cm-submit');
+    const tipEl = box.querySelector('.cm-tip');
+
+    function render(cms) {
+      if (!cms.length) {
+        list.innerHTML = '<p class="cm-empty">还没有留言。读完要是想起点什么，写下来。</p>';
+        return;
+      }
+      list.innerHTML = '';
+      cms.forEach(cm => {
+        const item = document.createElement('div');
+        item.className = 'cm-item';
+        const meta = document.createElement('div');
+        meta.className = 'cm-meta';
+        const nm = document.createElement('span');
+        nm.textContent = cm.name;
+        const tm = document.createElement('span');
+        const d = new Date(cm.time);
+        tm.textContent = (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+        meta.appendChild(nm); meta.appendChild(tm);
+        const body = document.createElement('div');
+        body.className = 'cm-body';
+        body.textContent = cm.content; // textContent 防 XSS
+        item.appendChild(meta); item.appendChild(body);
+        list.appendChild(item);
+      });
+    }
+
+    async function load() {
+      try {
+        const r = await fetch('/music-api/api/comments?essay=' + essay);
+        const d = await r.json();
+        render(d.comments || []);
+      } catch (e) { list.innerHTML = '<p class="cm-empty">留言加载失败</p>'; }
+    }
+
+    submitBtn.addEventListener('click', async () => {
+      const content = inputEl.value.trim();
+      if (!content) { tipEl.textContent = '写点什么吧'; return; }
+      submitBtn.disabled = true;
+      tipEl.textContent = '';
+      try {
+        const r = await fetch('/music-api/api/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ essay, name: nameEl.value.trim(), content }),
+        });
+        const d = await r.json();
+        if (d.ok) {
+          inputEl.value = '';
+          tipEl.textContent = '写下了';
+          setTimeout(() => { tipEl.textContent = ''; }, 2000);
+          load();
+        } else {
+          tipEl.textContent = d.error || '失败';
+        }
+      } catch (e) {
+        tipEl.textContent = '网络错误';
+      }
+      submitBtn.disabled = false;
+    });
+
+    load();
+  });
+
+  // ===== 分享卡片 =====
+  const QUOTES = {
+    e1: '为了不可计算的未来。拆开看，就是先把今天过完。',
+    e2: '雨没惹谁，它只是落。',
+    e3: '只有猫知道，到底是谁先捡的谁。',
+    e4: '反正台风走了，胶带还在。',
+    about: '日子会走远，字不会。',
+  };
+  const shareModal = document.getElementById('shareModal');
+  const shareCanvas = document.getElementById('shareCanvas');
+
+  function drawShareCard(section) {
+    const ctx = shareCanvas.getContext('2d');
+    const W = 900, H = 1350;
+    ctx.fillStyle = '#faf6ef';
+    ctx.fillRect(0, 0, W, H);
+    // 顶部细线装饰
+    ctx.strokeStyle = '#d95c41';
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(80, 90); ctx.lineTo(820, 90); ctx.stroke();
+    // 站点名
+    ctx.fillStyle = '#d95c41';
+    ctx.font = '26px serif';
+    ctx.fillText('散 文 集 · ESSAYS', 80, 150);
+    // 篇名
+    const h1 = section.querySelector('h1').textContent;
+    ctx.fillStyle = '#2b2620';
+    ctx.font = 'bold 56px "Noto Serif SC", serif';
+    ctx.fillText(h1, 80, 250);
+    // 金句
+    const q = QUOTES[section.id] || '';
+    ctx.fillStyle = '#5a5248';
+    ctx.font = '32px "Noto Serif SC", serif';
+    const lines = wrapText(ctx, q, 740);
+    lines.forEach((ln, i) => ctx.fillText(ln, 80, 340 + i * 52));
+    // 分隔线
+    ctx.strokeStyle = '#d8cfc2';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(80, 760); ctx.lineTo(820, 760); ctx.stroke();
+    // 底部信息
+    ctx.fillStyle = '#8a8178';
+    ctx.font = '24px serif';
+    ctx.fillText('nextai.show/essays', 80, 980);
+    ctx.fillText('四篇散文 · 始于一个闷热的夏夜', 80, 1020);
+    // 二维码
+    const qrCanvas = document.createElement('canvas');
+    new QRCode(qrCanvas, { text: location.origin + '/essays/', width: 160, height: 160 });
+    ctx.drawImage(qrCanvas, 80, 1080, 160, 160);
+    // 二维码旁小字
+    ctx.fillStyle = '#8a8178';
+    ctx.font = '20px serif';
+    ctx.fillText('扫码阅读', 270, 1160);
+  }
+
+  function wrapText(ctx, text, maxWidth) {
+    const chars = String(text || '').split('');
+    const lines = [];
+    let line = '';
+    for (const ch of chars) {
+      if (ctx.measureText(line + ch).width > maxWidth) { lines.push(line); line = ch; }
+      else line += ch;
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  document.querySelectorAll('[data-share]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const section = btn.closest('section.essay');
+      drawShareCard(section);
+      shareModal.classList.add('show');
+    });
+  });
+
+  document.getElementById('shareClose').addEventListener('click', () => {
+    shareModal.classList.remove('show');
+  });
+  shareModal.addEventListener('click', (e) => {
+    if (e.target === shareModal) shareModal.classList.remove('show');
+  });
+
+  document.getElementById('shareDownload').addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.href = shareCanvas.toDataURL('image/png');
+    a.download = 'essay-share.png';
+    a.click();
+  });
+</script>      <p class="share-hint">手机长按图片保存，分享给朋友</p>
+    </div>
+  </div>
 </body>
 </html>
