@@ -205,8 +205,10 @@
     width: 58px; height: 58px; flex-shrink: 0;
     border-radius: 10px; overflow: hidden; position: relative;
     border: 1px solid var(--line);
-    transition: box-shadow .3s;
+    transition: box-shadow .3s, transform .15s;
+    cursor: pointer;
   }
+  .ep-cover:hover { transform: scale(1.05); }
   .ep-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .essay-player.ep-playing .ep-cover {
     box-shadow: 0 4px 16px color-mix(in srgb, var(--brand) 40%, transparent);
@@ -554,7 +556,7 @@
 
 
       <div class="essay-player" data-player data-plist="all">
-        <div class="ep-cover" data-ep-disc>
+        <div class="ep-cover" data-ep-disc title="去曲库" data-goto-music>
           <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
         </div>
         <div class="ep-info">
@@ -652,7 +654,7 @@
 
 
       <div class="essay-player" data-player data-plist="all">
-        <div class="ep-cover" data-ep-disc>
+        <div class="ep-cover" data-ep-disc title="去曲库" data-goto-music>
           <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
         </div>
         <div class="ep-info">
@@ -733,7 +735,7 @@
 
 
       <div class="essay-player" data-player data-plist="all">
-        <div class="ep-cover" data-ep-disc>
+        <div class="ep-cover" data-ep-disc title="去曲库" data-goto-music>
           <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
         </div>
         <div class="ep-info">
@@ -831,7 +833,7 @@
 
 
       <div class="essay-player" data-player data-plist="all">
-        <div class="ep-cover" data-ep-disc>
+        <div class="ep-cover" data-ep-disc title="去曲库" data-goto-music>
           <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
         </div>
         <div class="ep-info">
@@ -895,7 +897,7 @@
       <div class="date-line">四篇散文的配乐，都在里面</div>
 
       <div class="essay-player" data-player data-plist="all">
-        <div class="ep-cover" data-ep-disc>
+        <div class="ep-cover" data-ep-disc title="去曲库" data-goto-music>
           <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
         </div>
         <div class="ep-info">
@@ -995,7 +997,7 @@
 
 
       <div class="essay-player" data-player data-plist="all">
-        <div class="ep-cover" data-ep-disc>
+        <div class="ep-cover" data-ep-disc title="去曲库" data-goto-music>
           <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
         </div>
         <div class="ep-info">
@@ -1250,6 +1252,14 @@
       });
     });
   }
+
+  // 封面点击 → 跳转音乐页
+  document.querySelectorAll('[data-goto-music]').forEach(cv => {
+    cv.addEventListener('click', () => {
+      const musicNav = document.querySelector('nav.sidebar a[data-target="music"]');
+      if (musicNav) musicNav.click();
+    });
+  });
 
   // ===== tab 切换 =====
   document.querySelectorAll('.mtab').forEach(btn => {

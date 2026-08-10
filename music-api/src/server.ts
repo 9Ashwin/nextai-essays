@@ -276,19 +276,23 @@ async function aiReview(content: string): Promise<boolean | null> {
   }
 }
 
-const COMMENTS_FILE = '/var/www/essays/data/comments.json';
+const COMMENTS_FILE = '/var/www/essays/data/comments.jsonl';
 const postLimits = new Map<string, number>(); // ip -> lastTs
 
 function loadComments(): any[] {
   try {
     if (!existsSync(COMMENTS_FILE)) return [];
-    return JSON.parse(readFileSync(COMMENTS_FILE, 'utf8'));
+    return readFileSync(COMMENTS_FILE, 'utf8')
+      .split('\n')
+      .filter((l) => l.trim())
+      .map((l) => { try { return JSON.parse(l); } catch { return null; } })
+      .filter((x) => x);
   } catch { return []; }
 }
 
-function saveComments(list: any[]) {
+function appendComment(rec: any) {
   mkdirSync('/var/www/essays/data', { recursive: true });
-  writeFileSync(COMMENTS_FILE, JSON.stringify(list, null, 1));
+  writeFileSync(COMMENTS_FILE, JSON.stringify(rec) + '\n', { flag: 'a' });
 }
 
 app.get('/api/comments', (c) => {
@@ -324,7 +328,7 @@ app.post('/api/comments', async (c) => {
   }
   rec.status = verdict === true ? 'approved' : (verdict === false ? 'rejected' : 'pending');
   list.push(rec);
-  saveComments(list);
+  appendComment(rec);
   postLimits.set(ip, now);
   return c.json({ ok: true, status: rec.status });
 });
