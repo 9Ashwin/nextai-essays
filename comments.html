@@ -5,6 +5,469 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>想说的话 · 散文集</title>
 <style>
+
+  :root {
+    --brand: #d95c41;
+    --brand-soft: rgba(217, 92, 65, 0.12);
+    --bg: #faf9f5;
+    --fg: #2c2a27;
+    --muted: #7a746c;
+    --line: rgba(44, 42, 39, 0.1);
+    --card: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --brand: #e07a5f;
+      --brand-soft: rgba(224, 122, 95, 0.16);
+      --bg: #171512;
+      --fg: #e8e2d8;
+      --muted: #9a928a;
+      --line: rgba(232, 226, 216, 0.12);
+      --card: #201d19;
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Inter', 'Noto Serif SC', sans-serif;
+    line-height: 1.9;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    min-height: 100vh;
+    transition: background .3s, color .3s;
+  }
+  nav.sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--line);
+    padding: 2.2rem 1.4rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--bg);
+    z-index: 10;
+  }
+  nav.sidebar .site-title {
+    font-family: 'Newsreader', 'Noto Serif SC', serif;
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+    color: var(--brand);
+  }
+  nav.sidebar .site-sub {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    margin-bottom: 2rem;
+  }
+  nav.sidebar .nav-label {
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  nav.sidebar a.item {
+    display: block;
+    padding: 0.55rem 0.8rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--fg);
+    font-size: 0.92rem;
+    margin-bottom: 0.15rem;
+    transition: background .2s, color .2s;
+  }
+  nav.sidebar a.item:hover { background: var(--brand-soft); color: var(--brand); }
+  nav.sidebar a.item.active { background: var(--brand-soft); color: var(--brand); font-weight: 500; }
+  nav.sidebar a.item { display: flex; align-items: center; gap: 0.55rem; }
+  nav.sidebar a.item .item-icon {
+    display: inline-flex;
+    color: var(--muted);
+    flex-shrink: 0;
+    transition: color .2s;
+  }
+  nav.sidebar a.item:hover .item-icon,
+  nav.sidebar a.item.active .item-icon { color: var(--brand); }
+  nav.sidebar a.item .item-text { line-height: 1.4; }
+  nav.sidebar a.item .en {
+    display: block;
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    margin-top: 0.1rem;
+  }
+  nav.sidebar a.item .date {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    margin-top: 0.1rem;
+    opacity: 0.8;
+  }
+  .essay-hero {
+    margin: 0 0 2.2rem;
+    padding: 0.5rem 0;
+  }
+  .essay-hero svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .essay .date-line {
+    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    margin-top: 0.6rem;
+    margin-bottom: 3rem;
+  }
+  main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .essay { display: none; width: 100%; }
+  .essay.active { display: block; }
+  .essay-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+  .essay .kicker {
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 1.2rem;
+  }
+  .essay h1 {
+    font-family: 'Newsreader', 'Noto Serif SC', serif;
+    font-weight: 400;
+    font-size: clamp(1.9rem, 4.5vw, 3rem);
+    line-height: 1.3;
+    margin-bottom: 0.6rem;
+  }
+  .essay h1 em { font-style: italic; color: var(--brand); }
+  .essay .sub {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 3rem;
+    letter-spacing: 0.06em;
+  }
+  .essay p {
+    margin-bottom: 1.9rem;
+    font-size: 1.06rem;
+    text-align: justify;
+    text-justify: inter-ideograph;
+  }
+  .essay p.lead { font-size: 1.2rem; line-height: 2; }
+  .dropcap::first-letter {
+    font-family: 'Newsreader', serif;
+    font-size: 3.4rem;
+    float: left;
+    line-height: 1;
+    padding: 0.35rem 0.6rem 0 0;
+    color: var(--brand);
+  }
+  .essay .quote {
+    border-left: 2px solid var(--brand);
+    padding: 0.3rem 0 0.3rem 1.4rem;
+    margin: 2.6rem 0;
+    font-family: 'Newsreader', 'Noto Serif SC', serif;
+    font-style: italic;
+    font-size: 1.16rem;
+    line-height: 1.9;
+    color: var(--brand);
+  }
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin: 3.4rem 0;
+    color: var(--brand);
+    opacity: 0.7;
+  }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+  .end-mark { text-align: center; color: var(--brand); font-size: 1.4rem; margin-top: 4rem; letter-spacing: 0.3em; }
+  /* 播放组件（紧凑窄条版） */
+  .essay-player {
+    display: flex; align-items: center; gap: 0.85rem;
+    max-width: 430px;
+    margin: 1.2rem 0 1.6rem;
+    padding: 0.6rem 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .ep-cover {
+    width: 58px; height: 58px; flex-shrink: 0;
+    border-radius: 10px; overflow: hidden; position: relative;
+    border: 1px solid var(--line);
+    transition: box-shadow .3s, transform .15s;
+    cursor: pointer;
+  }
+  .ep-cover:hover { transform: scale(1.05); }
+  .ep-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .essay-player.ep-playing .ep-cover {
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--brand) 40%, transparent);
+  }
+  .ep-info { flex: 1; min-width: 0; }
+  .ep-line1 { display: flex; align-items: baseline; gap: 0.5rem; min-width: 0; }
+  .ep-title { font-size: 0.92rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ep-artist { font-size: 0.74rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; }
+  .ep-album { display: none; }
+  .ep-progress {
+    height: 2px; border-radius: 1px; background: var(--line);
+    margin: 0.4rem 0 0.35rem; cursor: pointer; position: relative;
+  }
+  .ep-fill { height: 100%; width: 0%; border-radius: 1px; background: var(--brand); }
+  .ep-controls { display: flex; align-items: center; gap: 0.35rem; }
+  .ep-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--muted); padding: 0.25rem; line-height: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: color .15s, opacity .15s; opacity: 0.85;
+  }
+  .ep-btn svg { width: 15px; height: 15px; }
+  .ep-btn:hover { color: var(--brand); opacity: 1; }
+  .ep-btn.ep-main {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--brand); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    border: none; cursor: pointer; opacity: 1;
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--brand) 35%, transparent);
+    transition: transform .1s, opacity .15s;
+  }
+  .ep-btn.ep-main svg { width: 14px; height: 14px; }
+  .ep-btn.ep-main:hover { color: #fff; opacity: 0.92; }
+  .ep-btn.ep-main:active { transform: scale(0.94); }
+  .ep-time { font-size: 0.68rem; color: var(--muted); margin-left: 0.3rem; font-variant-numeric: tabular-nums; }
+  .essay-player.ep-playing .ep-title { color: var(--brand); }
+
+  @media (max-width: 480px) {
+    .essay-player { max-width: none; }
+    .ep-cover { width: 52px; height: 52px; }
+  }  /* 分享卡片 */
+  .share-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; margin-left: 0.6rem;
+    border: 1px solid var(--line); border-radius: 50%;
+    background: none; color: var(--brand);
+    cursor: pointer; transition: all .15s; vertical-align: middle; line-height: 0;
+  }
+  .share-btn svg { width: 15px; height: 15px; }
+  .share-btn:hover { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .share-modal {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+    align-items: center; justify-content: center; flex-direction: column; gap: 0.8rem; padding: 1rem;
+  }
+  .share-modal.show { display: flex; }
+  .share-modal-inner {
+    display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
+    max-height: 92vh; overflow: auto;
+  }
+  #shareCanvas {
+    width: min(420px, 88vw); height: auto;
+    border-radius: 14px; box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    background: #faf6ef;
+  }
+  .share-actions { display: flex; gap: 0.7rem; }
+  .share-close {
+    background: none; border: 1px solid var(--line); color: #fff;
+    border-radius: 8px; padding: 0.4rem 1.2rem; font-size: 0.88rem; cursor: pointer; font-family: inherit;
+  }
+  .share-hint { color: rgba(255,255,255,0.8); font-size: 0.8rem; margin: 0; }
+  /* 留言板 */
+  .comments { margin: 2rem 0 0.5rem; padding-top: 1.2rem; border-top: 1px solid var(--line); }
+  .cm-title { font-size: 0.95rem; font-weight: 500; margin: 0 0 0.8rem; }
+  .cm-list { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1rem; }
+  .cm-item { padding: 0.55rem 0.7rem; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--bg) 97%, transparent); }
+  .cm-item .cm-meta { display: flex; gap: 0.5rem; align-items: baseline; font-size: 0.76rem; color: var(--muted); margin-bottom: 0.25rem; }
+  .cm-item .cm-body { font-size: 0.9rem; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+  .cm-empty { font-size: 0.85rem; color: var(--muted); }
+  .cm-form { display: flex; flex-direction: column; gap: 0.45rem; }
+  .cm-name, .cm-input {
+    background: none; border: 1px solid var(--line); border-radius: 8px;
+    padding: 0.45rem 0.7rem; color: var(--text); font-size: 0.88rem; font-family: inherit;
+    outline: none; transition: border-color .15s; resize: vertical;
+  }
+  .cm-name { max-width: 200px; }
+  .cm-input:focus, .cm-name:focus { border-color: var(--brand); }
+  .cm-row { display: flex; align-items: center; gap: 0.7rem; }
+  .cm-submit {
+    background: var(--brand); color: #fff; border: none; border-radius: 8px;
+    padding: 0.4rem 1.2rem; font-size: 0.88rem; cursor: pointer; font-family: inherit;
+    transition: opacity .15s;
+  }
+  .cm-submit:hover { opacity: 0.9; }
+  .cm-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .cm-tip { font-size: 0.76rem; color: var(--muted); }
+  /* 音乐 tab */
+  .music-tabs { display: flex; gap: 0.4rem; margin: 0.6rem 0 1.2rem; }
+  .mtab {
+    background: none; border: 1px solid var(--line); border-radius: 999px;
+    color: var(--muted); font-size: 0.85rem; padding: 0.3rem 0.9rem;
+    cursor: pointer; transition: all .15s; font-family: inherit;
+  }
+  .mtab:hover { color: var(--brand); border-color: var(--brand); }
+  .mtab.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .rank-tabs { display: flex; gap: 0.4rem; margin-bottom: 0.8rem; }
+  .rtab {
+    background: none; border: 1px solid var(--line); border-radius: 8px;
+    color: var(--muted); font-size: 0.82rem; padding: 0.25rem 0.8rem;
+    cursor: pointer; transition: all .15s; font-family: inherit;
+  }
+  .rtab.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .rank-list { display: flex; flex-direction: column; }
+  .rank-item {
+    display: flex; align-items: center; gap: 0.8rem;
+    padding: 0.55rem 0.2rem; border-bottom: 1px solid var(--line);
+    cursor: pointer; transition: background .12s;
+  }
+  .rank-item:hover { background: color-mix(in srgb, var(--bg) 97%, var(--brand)); }
+  .rank-item .rk-no { width: 1.6rem; text-align: center; color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+  .rank-item .rk-no.top { color: var(--brand); font-weight: 600; }
+  .rank-item img { width: 42px; height: 42px; border-radius: 8px; object-fit: cover; border: 1px solid var(--line); }
+  .rank-item .rk-info { flex: 1; min-width: 0; }
+  .rank-item .rk-title { display: block; font-size: 0.92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rank-item .rk-artist { display: block; font-size: 0.78rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rank-item .rk-play { color: var(--brand); font-size: 0.9rem; }
+  .rank-item.playing .rk-title { color: var(--brand); }
+  .search-row { display: flex; gap: 0.5rem; margin-bottom: 0.9rem; }
+  .search-row input {
+    flex: 1; background: none; border: 1px solid var(--line); border-radius: 8px;
+    padding: 0.45rem 0.8rem; color: var(--text); font-size: 0.92rem; font-family: inherit;
+    outline: none; transition: border-color .15s;
+  }
+  .search-row input:focus { border-color: var(--brand); }
+  .search-btn {
+    background: var(--brand); color: #fff; border: none; border-radius: 8px;
+    width: 38px; height: 38px; cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity .15s;
+  }
+  .search-btn svg { width: 17px; height: 17px; }
+  .search-btn:hover { opacity: 0.9; }
+  .reco-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+  .reco-card { cursor: pointer; }
+  .reco-card img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; border: 1px solid var(--line); }
+  .reco-card .rc-name { display: block; font-size: 0.84rem; margin-top: 0.35rem; line-height: 1.35; }
+  .reco-card .rc-count { display: block; font-size: 0.74rem; color: var(--muted); margin-top: 0.1rem; }
+  @media (max-width: 480px) { .reco-grid { grid-template-columns: repeat(2, 1fr); } }
+  /* 音乐列表 */
+  .music-list { margin: 1.8rem 0; }
+  .music-item {
+    display: flex; align-items: center; gap: 0.9rem;
+    padding: 0.7rem 0.2rem;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .music-item:hover { background: color-mix(in srgb, var(--bg) 97%, var(--brand)); }
+  .music-item img {
+    width: 46px; height: 46px; border-radius: 8px; object-fit: cover;
+    border: 1px solid var(--line); flex-shrink: 0;
+  }
+  .mi-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+  .mi-title { font-size: 0.98rem; }
+  .mi-artist { font-size: 0.82rem; color: var(--muted); }
+  .mi-dur { font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .mi-play {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid var(--line); background: none; color: var(--brand);
+    font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all .15s; flex-shrink: 0;
+  }
+  .music-item.playing .mi-play {
+    background: var(--brand); color: #fff; border-color: var(--brand);
+  }
+  .music-note { font-size: 0.85rem; color: var(--muted); }
+
+  /* 底部播放条 */
+  .player-bar {
+    position: fixed; left: 50%; bottom: 1rem; transform: translateX(-50%);
+    z-index: 60;
+    display: none; align-items: center; gap: 0.8rem;
+    width: min(560px, calc(100vw - 2rem));
+    padding: 0.55rem 0.8rem;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.14);
+  }
+  .player-bar.show { display: flex; }
+  .player-bar img { width: 42px; height: 42px; border-radius: 8px; object-fit: cover; border: 1px solid var(--line); flex-shrink: 0; }
+  .pb-info { display: flex; flex-direction: column; gap: 0.12rem; min-width: 0; }
+  #pbTitle { font-size: 0.92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #pbArtist { font-size: 0.78rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pb-controls { flex: 1; display: flex; align-items: center; gap: 0.6rem; min-width: 0; }
+  #pbToggle {
+    width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+    border: none; background: var(--brand); color: #fff; font-size: 0.75rem;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .pb-progress { flex: 1; height: 4px; border-radius: 2px; background: var(--line); cursor: pointer; position: relative; }
+  .pb-fill { height: 100%; width: 0%; border-radius: 2px; background: var(--brand); }
+  #pbTime { font-size: 0.74rem; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  #pbClose { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.85rem; padding: 0.3rem; flex-shrink: 0; }
+  #pbClose:hover { color: var(--brand); }
+
+  /* 移动端：播放条加下边距，正文不被挡 */
+  @media (max-width: 768px) {
+    .player-bar { width: calc(100vw - 1.2rem); bottom: 0.6rem; }
+  }
+  /* 移动端"目录"按钮（桌面隐藏） */
+  .mobile-menu { display: none; }
+  @media (max-width: 760px) {
+    body { flex-direction: column; }
+    .mobile-menu {
+      display: block;
+      position: fixed;
+      z-index: 16;
+      top: 14px;
+      left: 14px;
+      padding: 8px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--fg);
+      background: color-mix(in srgb, var(--bg) 85%, transparent);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font: 600 11px 'Noto Serif SC', serif;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    nav.sidebar {
+      position: fixed;
+      z-index: 15;
+      inset: 0 auto 0 0;
+      width: min(82vw, 300px);
+      height: 100vh;
+      overflow-y: auto;
+      transform: translateX(-102%);
+      transition: transform .25s ease;
+      border-right: 1px solid var(--line);
+      box-shadow: 18px 0 50px rgba(0,0,0,0.12);
+    }
+    body.menu-open nav.sidebar { transform: translateX(0); }
+    body.menu-open::after {
+      content: "";
+      position: fixed;
+      z-index: 14;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+    }
+    nav.sidebar .site-title { font-size: 1.15rem; }
+    nav.sidebar .site-sub { font-size: 0.62rem; margin-bottom: 1.4rem; }
+    nav.sidebar a.item .en { display: none; }
+  }
+
+
   :root {
     --bg: #faf6ef;
     --text: #2b2620;
@@ -48,15 +511,71 @@
   .cm-submit:disabled { opacity: 0.5; cursor: not-allowed; }
   .cm-tip { font-size: 0.8rem; color: var(--muted); }
   .footer { margin-top: 3rem; text-align: center; color: var(--muted); font-size: 0.8rem; }
+
 </style>
 </head>
 <body>
-<div class="page">
-  <div class="topline">
-    <span class="brand">散文集<small>ESSAYS</small></span>
-    <a href="/essays/">← 回首页</a>
+<button class="mobile-menu" id="mobileMenu" aria-label="打开篇目导航" aria-expanded="false">目录</button>
+
+<nav class="sidebar">
+  <div class="site-title">散文集</div>
+  <div class="site-sub">ESSAYS</div>
+  <div class="nav-label">篇目</div>
+<a class="item" data-target="e4" href="/essays/#e4">
+    <span class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5C7 4.5 2.73 7.61 1.5 12c1.23 4.39 5.5 7.5 10.5 7.5s9.27-3.11 10.5-7.5c-1.23-4.39-5.5-7.5-10.5-7.5z"/><circle cx="12" cy="12" r="3"/></svg></span>
+    <span class="item-text">为了不可计算的未来</span>
+  </a>
+<a class="item" data-target="e1" href="javascript:void(0)">
+    <span class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17a10 10 0 0 0-20 0"/><path d="M6 17a6 6 0 0 1 12 0"/><path d="M10 17a2 2 0 0 1 4 0"/></svg></span>
+    <span class="item-text">雨知道</span>
+  </a>
+<a class="item" data-target="e2" href="javascript:void(0)">
+    <span class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><g><circle cx="11" cy="4" r="2" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="8" r="2" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="16" r="2" stroke="currentColor" stroke-width="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z" stroke="currentColor" stroke-width="2"/></g></svg></span>
+    <span class="item-text">我爸捡了个猫</span>
+  </a>
+  <a class="item" data-target="e3" href="javascript:void(0)">
+    <span class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><line x1="10" y1="20" x2="11" y2="22"/><line x1="13" y1="21" x2="14" y2="23"/><line x1="16" y1="20" x2="17" y2="22"/></svg></span>
+    <span class="item-text">台风来了</span>
+  </a>
+    <a class="item" data-target="music" href="javascript:void(0)">
+    <span class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+    <span class="item-text">写字的时光</span>
+  </a>
+  <a class="item active" href="/essays/comments.html" data-external>
+    <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span class="item-text">留言</span>
+  </a>
+  <a class="item" data-target="about" href="javascript:void(0)">
+    <span class="item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-linecap="square"><path d="M24 40.5V41L24 10V10.5"/><path d="M24 41C31.0005 36.9995 37.9995 36.9995 45 41V10.0003C37.9995 5.99989 31.0005 5.99989 24 10.0003C16.9995 5.99989 10.0005 5.99989 3 10.0003V41C10.0005 36.9995 16.9995 36.9995 24 41Z"/><path d="M30 16.5C32.8362 15.1345 36.5662 15.06 39.5 16.2763"/><path d="M30 23.5832C32.8362 22.2178 36.5662 22.1432 39.5 23.3596"/><path d="M30 30.6665C32.8362 29.301 36.5662 29.2265 39.5 30.4428"/></svg></span>
+    <span class="item-text">关于</span>
+  </a>
+  </div>
+</nav>
+
+<main>
+<div class="essay-inner">
+  <div class="essay-player" data-player data-plist="all">
+    <div class="ep-cover" data-ep-disc title="去曲库">
+      <img src="images/music/yunduan.jpg" alt="" data-ep-cover>
+    </div>
+    <div class="ep-info">
+      <div class="ep-line1">
+        <span class="ep-title" data-ep-title>云端少年</span>
+        <span class="ep-artist" data-ep-artist>代鑫 / 戴尔基</span>
+      </div>
+      <span class="ep-album" data-ep-album>众乐纪肆·光怪陆离</span>
+      <div class="ep-progress"><div class="ep-fill" data-ep-fill></div></div>
+      <div class="ep-controls">
+        <button class="ep-btn" data-ep-prev title="上一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20" fill="currentColor" stroke="none"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
+        <button class="ep-btn ep-main" data-ep-toggle title="播放/暂停"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>
+        <button class="ep-btn" data-ep-next title="下一首"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4" fill="currentColor" stroke="none"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
+        <span class="ep-time" data-ep-time>0:00 / 4:40</span>
+      </div>
+    </div>
   </div>
 
+<div class="page">
+  
   <h1>想说的话</h1>
   <p class="sub">读完要是想起点什么，写下来。日子会走远，字不会。</p>
 
@@ -84,7 +603,196 @@
   <div class="footer">四篇散文，始于一个闷热的夏夜。</div>
 </div>
 
+
+
+</div>
+</main>
+
 <script>
+  const PLAYLIST = [
+    { src: 'music/yunduan.mp3', cover: 'images/music/yunduan.jpg', title: '云端少年', artist: '代鑫 / 戴尔基', album: '众乐纪肆·光怪陆离', dur: '4:40' },
+    { src: null, id: 28815250, cover: 'https://p1.music.126.net/W_5XiCv3rGS1-J7EXpHSCQ==/18885211718782327.jpg', title: '平凡之路', artist: '朴树', album: '猎户星座', dur: '5:02' },
+    { src: null, id: 28996922, cover: 'https://p2.music.126.net/xANk1-adqsx10DpRLJOBzg==/109951167411817871.jpg', title: '那些花儿', artist: '朴树', album: '我去2000年', dur: '4:55' },
+    { src: null, id: 436514312, cover: 'https://p1.music.126.net/34YW1QtKxJ_3YnX9ZzKhzw==/2946691234868155.jpg', title: '成都', artist: '赵雷', album: '成都', dur: '5:28' },
+    { src: null, id: 202373, cover: 'https://p2.music.126.net/btBocL7KKvl0sRZY62_BIA==/109951169213244790.jpg', title: '南方姑娘', artist: '赵雷', album: '赵小雷', dur: '5:32' },
+    { src: null, id: 27646198, cover: 'https://p2.music.126.net/Ss7mkl2EK3Xl7Vv6iz-XAg==/109951172945820235.jpg', title: '董小姐', artist: '宋冬野', album: '安和桥北', dur: '5:10' },
+    { src: null, id: 26598946, cover: 'https://p2.music.126.net/0tEzUaiiWOb3gOgQaYKATg==/109951163023734669.jpg', title: '山丘', artist: '李宗盛', album: '山丘', dur: '6:45' },
+    { src: null, id: 66842, cover: 'https://p1.music.126.net/wECqsELfPFdVNLpW0QWhmA==/109951171836564936.jpg', title: '十年', artist: '陈奕迅', album: '黑白灰', dur: '3:25' },
+    { src: null, id: 66282, cover: 'https://p1.music.126.net/W9imJx0w_JeCGGs43dfjFg==/109951171529987110.jpg', title: '浮夸', artist: '陈奕迅', album: 'U87', dur: '4:43' },
+    { src: null, id: 299936, cover: 'https://p2.music.126.net/W6MDlem6_FsymbnxKc_BKQ==/109951171530948990.jpg', title: '红豆', artist: '王菲', album: '唱游', dur: '4:16' },
+    { src: null, id: 298838, cover: 'https://p1.music.126.net/ZPnVAoCKS9VbUZkOzrJHDw==/19157890602644480.jpg', title: '传奇', artist: '王菲', album: '传奇', dur: '4:56' },
+    { src: null, id: 1357375695, cover: 'https://p1.music.126.net/q6cm6Pk70YArijk1_QDoEg==/109951163984013003.jpg', title: '海阔天空', artist: 'Beyond', album: '华纳廿三周年纪念精选系列 - B﻿eyond', dur: '3:59' },
+    { src: null, id: 346576, cover: 'https://p2.music.126.net/JOJvZc_7SqQjKf8TktQ_bw==/29686813951246.jpg', title: '光辉岁月', artist: 'Beyond', album: '光辉岁月十五年', dur: '4:58' },
+    { src: null, id: 254574, cover: 'https://p2.music.126.net/eBF7bHnJYBUfOFrJ_7SUfw==/109951163351825356.jpg', title: '后来', artist: '刘若英', album: '我等你', dur: '5:41' },
+    { src: null, id: 385781, cover: 'https://p1.music.126.net/l0vGEnowGfj6DgFSGojyfQ==/109951168163397768.jpg', title: '突然好想你', artist: '五月天', album: '后青春期的诗', dur: '4:25' },
+    { src: null, id: 386538, cover: 'https://p2.music.126.net/-Md-YgTBiVsbpmVXIZz00w==/109951170702056876.jpg', title: '温柔', artist: '五月天', album: '我们是五月天', dur: '4:29' },
+    { src: null, id: 187134, cover: 'https://p1.music.126.net/EAG_4Ee85beWnAzyLetdUA==/109951165566710305.jpg', title: '朋友', artist: '周华健', album: '朋友', dur: '5:12' },
+    { src: null, id: 1847408145, cover: 'https://p1.music.126.net/LzkzNYJ7zzb9b3ofOac2Qg==/109951168146310081.jpg', title: '月亮代表我的心', artist: '邓丽君', album: '90年代粵語情歌集', dur: '3:28' },
+    { src: null, id: 109530, cover: 'https://p2.music.126.net/GR6OSPO_tYmk_U9g0OhR_A==/109951172346449536.jpg', title: '童年', artist: '罗大佑', album: '之乎者也', dur: '3:54' },
+    { src: null, id: 1298435663, cover: 'https://p1.music.126.net/lYn5neyt8NxLtEFzM29hQg==/109951168108537623.jpg', title: '同桌的你', artist: '老狼', album: '一人一首成名曲（10）', dur: '3:21' },
+    { src: null, id: 168091, cover: 'https://p1.music.126.net/C6txAWMGlVmAcAD37RVutQ==/122045790684028.jpg', title: '蓝莲花', artist: '许巍', album: '时光.漫步', dur: '4:30' },
+  ];
+  const audio = new Audio();
+  audio.preload = 'none';
+  let curIdx = -1;
+  let playing = false;
+
+  // 初始渲染:每组件显示自己歌单第一首
+  document.querySelectorAll('.essay-player').forEach(comp => renderComp(comp));
+
+  const fmt = (s) => {
+    if (!isFinite(s)) return '0:00';
+    const m = Math.floor(s / 60), ss = Math.floor(s % 60);
+    return m + ':' + String(ss).padStart(2, '0');
+  };
+
+  function plistOf(comp) {
+    const raw = comp ? comp.getAttribute('data-plist') : 'all';
+    if (!raw || raw === 'all') return PLAYLIST.map((_, i) => i);
+    return raw.split(',').map(Number).filter(n => n >= 0 && n < PLAYLIST.length);
+  }
+
+  // 组件显示:播放中歌曲属于该组件歌单则显示它,否则显示歌单第一首
+  function renderComp(comp) {
+    const pl = plistOf(comp);
+    const t = (curIdx >= 0 && pl.includes(curIdx)) ? PLAYLIST[curIdx] : PLAYLIST[pl[0]];
+    comp.querySelector('[data-ep-cover]').src = t.cover;
+    comp.querySelector('[data-ep-title]').textContent = t.title;
+    comp.querySelector('[data-ep-artist]').textContent = t.artist;
+    comp.querySelector('[data-ep-album]').textContent = t.album;
+    comp.querySelector('[data-ep-time]').textContent = '0:00 / ' + t.dur;
+  }
+
+  function loadTrack(i) {
+    curIdx = (i + PLAYLIST.length) % PLAYLIST.length;
+    const t = PLAYLIST[curIdx];
+    audio.src = t.src;
+    // 同步所有组件
+    document.querySelectorAll('.essay-player').forEach(comp => renderComp(comp));
+    document.querySelectorAll('[data-ep-fill]').forEach(el => el.style.width = '0%');
+    // 同步音乐栏列表
+    document.querySelectorAll('.music-item').forEach((it, k) => {
+      it.classList.toggle('playing', k === curIdx);
+      it.querySelector('.mi-play').textContent = '▶';
+    });
+  }
+
+  async function playTrack(i) {
+    loadTrack(i);
+    const t = PLAYLIST[curIdx];
+    playing = true; syncUI();
+    if (t.src) {
+      audio.src = t.src;
+      audio.play().catch(e => { playing = false; syncUI(); });
+    } else {
+      try {
+        const d = await api('/api/play?id=' + t.id);
+        if (d.url) {
+          audio.src = d.url;
+          audio.play().catch(e => { playing = false; syncUI(); });
+        } else {
+          playing = false; syncUI();
+        }
+      } catch (e) {
+        playing = false; syncUI();
+      }
+    }
+  }
+
+  function toggle(comp) {
+    if (curIdx < 0) { playTrack(plistOf(comp)[0]); return; }
+    if (!plistOf(comp).includes(curIdx)) { playTrack(plistOf(comp)[0]); return; }
+    if (audio.paused) {
+      playing = true; syncUI();
+      audio.play().catch(e => { playing = false; syncUI(); });
+    } else {
+      audio.pause(); playing = false; syncUI();
+    }
+  }
+
+  function syncUI() {
+    const icon = playing ? '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4.5" height="16" rx="1"/><rect x="13.5" y="4" width="4.5" height="16" rx="1"/></svg>' : '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg>';
+    document.querySelectorAll('[data-ep-toggle]').forEach(b => b.innerHTML = icon);
+    document.querySelectorAll('.essay-player').forEach(p => {
+      p.classList.toggle('ep-playing', playing);
+    });
+    document.querySelectorAll('[data-ep-disc]').forEach(d => d.classList.toggle('rotating', playing));
+    document.querySelectorAll('.music-item').forEach((it, k) => {
+      it.classList.toggle('playing', k === curIdx && playing);
+      it.querySelector('.mi-play').innerHTML = (k === curIdx && playing) ? '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4.5" height="16" rx="1"/><rect x="13.5" y="4" width="4.5" height="16" rx="1"/></svg>' : '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg>';
+    });
+  }
+
+  // 组件按钮
+  document.querySelectorAll('[data-ep-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => toggle(btn.closest('.essay-player')));
+  });
+  function stepInGroup(comp, dir) {
+    const pl = plistOf(comp);
+    let idx = pl.indexOf(curIdx);
+    if (idx === -1) { playTrack(pl[0]); return; }
+    playTrack(pl[(idx + dir + pl.length) % pl.length]);
+  }
+  document.querySelectorAll('[data-ep-prev]').forEach(btn => {
+    btn.addEventListener('click', () => stepInGroup(btn.closest('.essay-player'), -1));
+  });
+  document.querySelectorAll('[data-ep-next]').forEach(btn => {
+    btn.addEventListener('click', () => stepInGroup(btn.closest('.essay-player'), 1));
+  });
+  // 组件进度条
+  document.querySelectorAll('.ep-progress').forEach(pb => {
+    pb.addEventListener('click', (e) => {
+      if (!audio.duration) return;
+      const r = pb.getBoundingClientRect();
+      audio.currentTime = (e.clientX - r.left) / r.width * audio.duration;
+    });
+  });
+
+  // ===== 曲库渲染 =====
+  const musicList = document.getElementById('musicList');
+  if (musicList) {
+    musicList.innerHTML = PLAYLIST.map((t, k) =>
+      '<div class="music-item" data-idx="' + k + '">' +
+        '<img src="' + t.cover + '" alt="" loading="lazy">' +
+        '<div class="mi-info"><span class="mi-title">' + t.title + '</span><span class="mi-artist">' + t.artist + '</span></div>' +
+        '<span class="mi-dur">' + t.dur + '</span>' +
+        '<button class="mi-play" aria-label="播放"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg></button>' +
+      '</div>'
+    ).join('');
+    musicList.querySelectorAll('.music-item').forEach(it => {
+      it.addEventListener('click', () => {
+        const k = Number(it.dataset.idx);
+        if (k === curIdx && !audio.paused) { audio.pause(); playing = false; syncUI(); return; }
+        playTrack(k);
+      });
+    });
+  }
+
+  // 封面点击 → 跳转音乐页
+  document.querySelectorAll('[data-goto-music]').forEach(cv => {
+    cv.addEventListener('click', () => {
+      const musicNav = document.querySelector('nav.sidebar a[data-target="music"]');
+      if (musicNav) musicNav.click();
+    });
+  });
+
+
+  const mobileMenu = document.getElementById('mobileMenu');
+  if (mobileMenu) {
+    mobileMenu.addEventListener('click', () => {
+      const open = document.body.classList.toggle('menu-open');
+      mobileMenu.setAttribute('aria-expanded', open);
+    });
+    document.querySelectorAll('nav.sidebar a.item').forEach(link => {
+      link.addEventListener('click', () => document.body.classList.remove('menu-open'));
+    });
+  }
+
+  // ===== 全局播放器：网易云风组件 + 音乐栏列表 =====
+
+
+// ===== 留言板 =====
+
   const ESSAY_NAMES = { e1: '雨知道', e2: '我爸捡了个猫', e3: '台风来了', e4: '为了不可计算的未来', about: '关于' };
   const list = document.getElementById('cmList');
   const nameEl = document.getElementById('cmName');
@@ -143,9 +851,9 @@
       const d = await r.json();
       if (d.ok) {
         inputEl.value = '';
-        tipEl.textContent = d.status === 'approved' ? '写下了' : '已提交，审核通过后展示';
-        setTimeout(() => { tipEl.textContent = ''; }, 2500);
-        if (d.status === 'approved') load();
+        tipEl.textContent = '写下了';
+        setTimeout(() => { tipEl.textContent = ''; }, 2000);
+        load();
       } else {
         tipEl.textContent = d.error || '失败';
       }
@@ -154,6 +862,7 @@
   });
 
   load();
+
 </script>
 </body>
 </html>

@@ -1066,6 +1066,13 @@
         <button id="shareClose" class="share-close">关闭</button>
       </div>
 <script>
+  // 加载时支持 #e1 #music 直达(留言页导航跳转用)
+  const hashTarget = location.hash.replace('#', '');
+  const hashLink = hashTarget ? document.querySelector('nav.sidebar a[data-target="' + hashTarget + '"]') : null;
+  if (hashLink) {
+    setTimeout(() => hashLink.click(), 50);
+  }
+
   const links = document.querySelectorAll('nav.sidebar a.item:not([data-external])');
   document.querySelectorAll('nav.sidebar a.item[data-external]').forEach(ext => {
     ext.addEventListener('click', () => {});
