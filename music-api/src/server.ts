@@ -65,6 +65,7 @@ const rateLimits: Record<string, { max: number; win: number }> = {
   play: { max: 40, win: 60_000 },
   rank: { max: 30, win: 60_000 },
   comments: { max: 5, win: 60_000 },
+  download: { max: 10, win: 60_000 },
 };
 const hits = new Map<string, number[]>();
 function rateLimit(key: string, cat: string): boolean {
@@ -210,6 +211,33 @@ app.get('/api/play', async (c) => {
     const r = await NCM.song_url_v1({ id: Number(id), level: 'standard', cookie: musicCookie || '' });
     const data = r.body?.data?.[0];
     return c.json({ url: data?.url || null, code: data?.code, br: data?.br });
+  } catch (e: any) {
+    return c.json({ error: String(e?.message || e) }, 500);
+  }
+});
+
+// 下载歌曲为 mp3: 复用登录 cookie 拿流地址,后端代理字节流返回,触发浏览器保存
+app.get('/api/download', async (c) => {
+  const id = c.req.query('id');
+  if (!id) return c.json({ error: 'missing id' }, 400);
+  if (!rateLimit(clientIp(c) + ':download', 'download')) return c.json({ error: '太频繁了,慢一点' }, 429);
+  try {
+    const r = await NCM.song_url_v1({ id: Number(id), level: 'standard', cookie: musicCookie || '' });
+    const data = r.body?.data?.[0];
+    if (!data?.url) return c.json({ error: '无可用音源(可能需要登录/VIP)', code: data?.code }, 404);
+    // 代理流: 带 Referer 拉网易云流,转发字节 + Content-Disposition
+    const stream = await fetch(data.url, { headers: { 'User-Agent': UA, 'Referer': NETEASE } });
+    if (!stream.ok || !stream.body) return c.json({ error: '音源拉取失败' }, 502);
+    const fname = `download-${id}.mp3`;
+    return new Response(stream.body, {
+      status: 200,
+      headers: {
+        'Content-Type': 'audio/mpeg',
+        'Content-Disposition': `attachment; filename="${fname}"`,
+        'Content-Length': String(stream.headers.get('content-length') || ''),
+        'Cache-Control': 'no-store',
+      },
+    });
   } catch (e: any) {
     return c.json({ error: String(e?.message || e) }, 500);
   }
